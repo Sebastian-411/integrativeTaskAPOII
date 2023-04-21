@@ -4,17 +4,17 @@ public class Product {
     private String name;
     private String description;
     private double price;
-    private int amountAvailable;
+    private int availableAmount;
     private Category category;
-    private int amountPurchased;
+    private int purchasedTimes;
 
-    public Product(String name, String description, double price, int amountAvailable, Category category, int amountPurchased) {
+    public Product(String name, String description, double price, int availableAmount, Category category, int purchasedTimes) {
         this.name = name;
         this.description = description;
         this.price = price;
-        this.amountAvailable = amountAvailable;
+        this.availableAmount = availableAmount;
         this.category = category;
-        this.amountPurchased = amountPurchased;
+        this.purchasedTimes = purchasedTimes;
     }
 
     public String getName() {
@@ -41,12 +41,13 @@ public class Product {
         this.price = price;
     }
 
-    public int getAmountAvailable() {
-        return amountAvailable;
+
+    public int getAvailableAmount() {
+        return availableAmount;
     }
 
-    public void setAmountAvailable(int amountAvailable) {
-        this.amountAvailable = amountAvailable;
+    public void setAvailableAmount(int availableAmount) {
+        this.availableAmount = availableAmount;
     }
 
     public Category getCategory() {
@@ -56,12 +57,11 @@ public class Product {
     public void setCategory(Category category) {
         this.category = category;
     }
-
-    public int getAmountPurchased() {
-        return amountPurchased;
+    public int getPurchasedTimes() {
+        return purchasedTimes;
     }
 
-    public void setAmountPurchased(int amountPurchased) {
-        this.amountPurchased = amountPurchased;
+    public void setPurchasedTimes(int purchasedTimes) {
+        this.purchasedTimes = purchasedTimes;
     }
 }
