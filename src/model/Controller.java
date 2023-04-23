@@ -1,10 +1,10 @@
 package model;
 import com.google.gson.Gson;
-import exceptions.InvalidAmountException;
-import exceptions.InvalidPriceException;
+import exceptions.*;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 public class Controller {
@@ -106,6 +106,128 @@ public class Controller {
     public void registerOrder(ArrayList<Order> y){
         orders.addAll(y);
     }
-    
+
+    public ArrayList<Product> searchProductByName(String goal) throws SearchNotFoundException {
+        products.sort((a, b) -> {return a.getName().compareTo(b.getName());
+        });
+        ArrayList<Product> x = binSearchProductByName(goal, 0, (products.size()/2), products.size()-1);
+        if(x == null){
+            throw new SearchNotFoundException();
+        }
+        return x;
+
+    }
+    private ArrayList<Product> binSearchProductByName(String searchIt, int begin, int mid, int end){
+        if(products.get(mid).getName().equalsIgnoreCase(searchIt)){
+            ArrayList<Product> g = new ArrayList<>();
+            for (int i = begin; i <= end; i++){
+                if(products.get(i).getName().equalsIgnoreCase(searchIt)){
+                    g.add(products.get(i));
+                }
+            }
+            return g;
+        } else if(end-begin == 1 ){
+            return null;
+        } else if(products.get(mid).getName().compareToIgnoreCase(searchIt) >0){
+            end = mid - 1;
+        } else {
+            begin = mid+1;
+        }
+        mid = (end+begin)/2;
+        return binSearchProductByName(searchIt, begin, mid, end);
+    }
+
+    public ArrayList<Product> searchProductByPrice(double goal) throws SearchNotFoundException {
+        products.sort((a, b) -> {
+            int criteria1 = (int) (a.getPrice()-b.getPrice());
+            if(criteria1 == 0){
+                int x = (int)(a.getPrice() - ((int)a.getPrice()))*100;
+                int y = (int)(b.getPrice() - ((int)b.getPrice()))*100;
+                criteria1 = x-y;
+            }
+            return criteria1;
+        });
+        ArrayList<Product> x = binSearchProductByPrice(goal, 0, (products.size()/2), products.size()-1);
+        if(x == null){
+            throw new SearchNotFoundException();
+        }
+        return x;
+
+    }
+    private ArrayList<Product> binSearchProductByPrice(double searchIt, int begin, int mid, int end){
+        if(products.get(mid).getPrice() == (searchIt)){
+            ArrayList<Product> g = new ArrayList<>();
+            for (int i = begin; i <= end; i++){
+                if(products.get(i).getPrice()==(searchIt)){
+                    g.add(products.get(i));
+                }
+            }
+            return g;
+        } else if(end-begin == 1 ){
+            return null;
+        } else if(products.get(mid).getPrice() > (searchIt)){
+            end = mid - 1;
+        } else {
+            begin = mid+1;
+        }
+        mid = (end+begin)/2;
+        return binSearchProductByPrice(searchIt, begin, mid, end);
+    }
+
+    public ArrayList<Product> searchProductByCategory(int i) throws SearchNotFoundException {
+        ArrayList<Product> filteredProducts = new ArrayList<>();
+        Category category = Category.values()[i];
+        Collections.sort(products, (a,b) -> {
+            int criteria1 = a.getCategory().compareTo(a.getCategory());
+            if(criteria1==0){
+                criteria1 = a.getName().compareTo(a.getName());
+            }
+            return criteria1;
+        });
+        for (Product p: products){
+            if(p.getCategory().equals(category)){
+                filteredProducts.add(p);
+            }
+        }
+        ArrayList<Product> x = filteredProducts;
+        if(x.isEmpty()){
+            throw new SearchNotFoundException();
+        }
+        return x;
+    }
+    public ArrayList<Product> searchProductByAvailableAmount(int goal) throws SearchNotFoundException {
+        products.sort((a, b) -> {
+            int criteria1 = a.getAvailableAmount() - b.getAvailableAmount();
+            if(criteria1 == 0){
+                criteria1 = a.getName().compareTo(b.getName());
+            }
+            return criteria1;
+        });
+        ArrayList<Product> x = binSearchProductByAvailableAmount(goal, 0, (products.size()/2), products.size()-1);
+        if(x == null){
+            throw new SearchNotFoundException();
+        }
+        return x;
+
+    }
+    private ArrayList<Product> binSearchProductByAvailableAmount(int searchIt, int begin, int mid, int end){
+        if(products.get(mid).getAvailableAmount() == (searchIt)){
+            ArrayList<Product> g = new ArrayList<>();
+            for (int i = begin; i <= end; i++){
+                if(products.get(i).getAvailableAmount()==(searchIt)){
+                    g.add(products.get(i));
+                }
+            }
+            return g;
+        } else if(end-begin == 1 ){
+            return null;
+        } else if(products.get(mid).getAvailableAmount() > (searchIt)){
+            end = mid - 1;
+        } else {
+            begin = mid+1;
+        }
+        mid = (end+begin)/2;
+        return binSearchProductByAvailableAmount(searchIt, begin, mid, end);
+    }
 }
 
