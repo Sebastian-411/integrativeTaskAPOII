@@ -22,3 +22,14 @@ Densidad de errores-fallos = 33 / 41 = 0.80
 Confiabilidad = 1 - 0.80 = 0.20  
 
 Completitud = 41 / 7 = 5.8
+
+-------------------------------------------------------------------
+## Commit 3
+
+### Commit 089f8b0ecfdca53a224eab1248067f1fceac38ed  
+
+Densidad de errores-fallos = 32 / 41 = 0.78  
+
+Confiabilidad = 1 - 0.78 = 0.22
+
+Completitud = 41 / 7 = 5.8
