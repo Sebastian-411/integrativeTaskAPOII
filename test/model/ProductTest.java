@@ -30,7 +30,7 @@ public class ProductTest {
     @Test
     public void registerProduct(){
         setupStage3();
-        assertThrows(InvalidAmountException.class, () -> {
+        assertThrows(InvalidPriceException.class, () -> {
             p.add(new Product("Barnie", "Pequeño y suave", -10, 0, Category.TOYS_AND_GAMES, 5));
         });
     }
