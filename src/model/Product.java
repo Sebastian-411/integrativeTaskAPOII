@@ -1,5 +1,7 @@
 package model;
 
+import exceptions.*;
+
 public class Product {
     private String name;
     private String description;
@@ -8,7 +10,14 @@ public class Product {
     private Category category;
     private int purchasedTimes;
 
-    public Product(String name, String description, double price, int availableAmount, Category category, int purchasedTimes) {
+    public Product(String name, String description, double price, int availableAmount, Category category, int purchasedTimes) throws InvalidPriceException, InvalidAmountException {
+        if(price<0){
+            throw new InvalidPriceException();
+        }
+        if(availableAmount<0 || purchasedTimes<0){
+            throw new InvalidAmountException();
+        }
+
         this.name = name;
         this.description = description;
         this.price = price;
@@ -63,5 +72,19 @@ public class Product {
 
     public void setPurchasedTimes(int purchasedTimes) {
         this.purchasedTimes = purchasedTimes;
+    }
+
+    public void increaseStock(int x){
+
+    }
+
+    @Override
+    public String toString() {
+        return  "name= " + name + '\n' +
+                "description= " + description + '\n' +
+                "price= " + price + '\n' +
+                "availableAmount= " + availableAmount + '\n' +
+                "category= " + category.toString() + '\n' +
+                "purchasedTimes= " + purchasedTimes;
     }
 }

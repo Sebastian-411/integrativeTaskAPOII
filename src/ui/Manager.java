@@ -56,23 +56,27 @@ public class Manager {
         }
     }
     public void registerProduct(){
-        System.out.println("Estas regitrando un producto \n Ingresa el nombre del producto");
-        String name = sc.nextLine();
-        System.out.println("Ingresa una descripcion del producto");
-        String description = sc.nextLine();
-        System.out.println("Ingresa el precio del producto");
-        double price = sc.nextDouble();
-        System.out.println("Ingresa la cantidad disponible del producto");
-        int availableAmount = sc.nextInt();
-        System.out.println("Ingresa el indice de la categoria a la cual pertenece el producto");
-        System.out.println(controller.showCategory());
-        int category = sc.nextInt();
-        System.out.println("Ingresa el numero de veces que este producto se ha vendido");
-        int purchasedTimes = sc.nextInt();
-        if(controller.registerProduct(name, description, price, availableAmount, category, purchasedTimes)){
-            System.out.println("El producto fue creado con exito");
-        }else{
-            System.out.println("Ha ocurrido un error:(");
+        try {
+            System.out.println("Estas regitrando un producto \n Ingresa el nombre del producto");
+            String name = sc.nextLine();
+            System.out.println("Ingresa una descripcion del producto");
+            String description = sc.nextLine();
+            System.out.println("Ingresa el precio del producto");
+            double price = sc.nextDouble();
+            System.out.println("Ingresa la cantidad disponible del producto");
+            int availableAmount = sc.nextInt();
+            System.out.println("Ingresa el indice de la categoria a la cual pertenece el producto");
+            System.out.println(controller.showCategory());
+            int category = sc.nextInt();
+            System.out.println("Ingresa el numero de veces que este producto se ha vendido");
+            int purchasedTimes = sc.nextInt();
+            if ( controller.registerProduct(name, description, price, availableAmount, category, purchasedTimes) ){
+                System.out.println("El producto fue creado con exito");
+            } else {
+                System.out.println("Ha ocurrido un error:(");
+            }
+        } catch (Exception e){
+            e.printStackTrace();
         }
     }
 

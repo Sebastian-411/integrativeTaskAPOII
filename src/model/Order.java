@@ -4,14 +4,14 @@ import java.util.ArrayList;
 
 public class Order {
     private String buyersName;
-    private ArrayList<Product> listOfProducts;
+    private ArrayList<Product> listOfProducts = new ArrayList<Product>();
     private double totalPrice;
     private Date purchaseDate;
-    public Order(String buyersName, double totalPrice, Date purchaseDate) {
+    public Order(String buyersName, ArrayList<Product> p) {
         this.buyersName = buyersName;
-        this.totalPrice = totalPrice;
-        this.purchaseDate = purchaseDate;
-        this.listOfProducts = new ArrayList<Product>();
+        //this.totalPrice = totalPrice; Esto se debe calcular
+        //this.purchaseDate = purchaseDate; Esto se debe calcular
+        this.listOfProducts = p; // se debe agregar la excepcio cuando este vacio
     }
     public String getBuyersName() {
         return buyersName;
@@ -41,6 +41,12 @@ public class Order {
     public boolean addProduct(Product productToAdd) {
         if (productToAdd != null) {
             return listOfProducts.add(productToAdd);
+        }
+        return false;
+    }
+    public boolean addProduct(ArrayList<Product> productToAdd) {
+        if (productToAdd != null) {
+            return listOfProducts.addAll(productToAdd);
         }
         return false;
     }

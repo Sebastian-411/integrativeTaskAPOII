@@ -1,5 +1,7 @@
 package model;
 import com.google.gson.Gson;
+import exceptions.InvalidAmountException;
+import exceptions.InvalidPriceException;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ public class Controller {
     public Controller() {
     }
 
-    public boolean registerProduct(String name, String description, double price, int availableAmount, int category, int purchasedTimes){
+    public boolean registerProduct(String name, String description, double price, int availableAmount, int category, int purchasedTimes) throws InvalidPriceException, InvalidAmountException {
         Product p = new Product(name, description, price, availableAmount, Category.values()[category], purchasedTimes);
         return products.add(p);
     }
@@ -98,6 +100,14 @@ public class Controller {
         writer1.write(data1);
         writer1.flush();
         fos1.close();
+    }
+
+    public void registerProduct(ArrayList<Product> x){
+        products.addAll(x);
+    }
+
+    public void registerOrder(ArrayList<Order> y){
+        orders.addAll(y);
     }
     
 }
