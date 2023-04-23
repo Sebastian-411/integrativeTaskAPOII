@@ -78,6 +78,11 @@ public class Product {
 
     }
 
+    public void buy(){
+        this.availableAmount = this.availableAmount-1;
+        this.purchasedTimes ++;
+    }
+
     @Override
     public String toString() {
         return  "name= " + name + '\n' +

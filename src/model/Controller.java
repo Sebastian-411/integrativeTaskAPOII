@@ -7,9 +7,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 
-/**
- * Controller
- */
 public class Controller {
     private ArrayList<Order> orders = new ArrayList<>();
     private ArrayList<Product> products = new ArrayList<>();

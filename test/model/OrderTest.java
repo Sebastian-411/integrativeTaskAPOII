@@ -1,6 +1,9 @@
 package model;
 
 
+import exceptions.InsufficientAmountException;
+import exceptions.InvalidAmountException;
+import exceptions.ListEmptyException;
 import org.junit.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,13 +29,9 @@ public class OrderTest {
     @Test
     public void registerOrder(){
         setupStage4();
-        Order order = null;
-        try{
-            order = new Order("Ricardo", new ArrayList<Product>());
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-        assertEquals(order.getListOfProducts(), p);
+        assertThrows(ListEmptyException.class, () -> {
+            Order order = new Order("Ricardo", new ArrayList<Product>());
+        });
     }
 
     @Test
@@ -72,16 +71,13 @@ public class OrderTest {
     @Test
     public void registerOrder3(){
         setupStage4();
-        Order order = null;
         ArrayList<Product> x = new ArrayList<>();
         x.add(p.get(0));
         x.add(p.get(1));
-        try{
-            order = new Order("Ricardo", x);
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-        assertEquals(order.getListOfProducts(), x); // esto deberia dar excepcion
+        assertThrows(InsufficientAmountException.class, () -> {
+            Order order = new Order("Ricardo", x);
+        });
+
     }
 
 

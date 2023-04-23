@@ -57,7 +57,7 @@ public class Manager {
     }
     public void registerProduct(){
         try {
-            System.out.println("Estas regitrando un producto \n Ingresa el nombre del producto");
+            System.out.println("Estas registrando un producto \n Ingresa el nombre del producto");
             String name = sc.nextLine();
             System.out.println("Ingresa una descripcion del producto");
             String description = sc.nextLine();
@@ -81,7 +81,15 @@ public class Manager {
     }
 
     public void registerOrder(){
+        try {
+            System.out.println("Estas regitrando un pedido \n Ingresa el nombre del cliente");
+            String name = sc.nextLine();
+            System.out.println("Ahora, ingresa los productos que quieres elegir");
+            // no se me ocurre como hacer esto
 
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     

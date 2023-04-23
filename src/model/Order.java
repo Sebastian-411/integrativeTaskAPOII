@@ -1,17 +1,25 @@
 package model;
-import java.sql.Date;
+import exceptions.InsufficientAmountException;
+import exceptions.ListEmptyException;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Order {
     private String buyersName;
-    private ArrayList<Product> listOfProducts = new ArrayList<Product>();
+    private ArrayList<Product> listOfProducts;
     private double totalPrice;
     private Date purchaseDate;
-    public Order(String buyersName, ArrayList<Product> p) {
+    public Order(String buyersName, ArrayList<Product> p) throws ListEmptyException, InsufficientAmountException {
+        if(verifyStock(p)){
+            throw new InsufficientAmountException();
+        }
+        if(p.isEmpty()){
+            throw new ListEmptyException();
+        }
         this.buyersName = buyersName;
-        //this.totalPrice = totalPrice; Esto se debe calcular
-        //this.purchaseDate = purchaseDate; Esto se debe calcular
-        this.listOfProducts = p; // se debe agregar la excepcio cuando este vacio
+        this.totalPrice = calculateTotalAndBuy(p);
+        this.purchaseDate = new Date();
+        this.listOfProducts = p;
     }
     public String getBuyersName() {
         return buyersName;
@@ -38,16 +46,24 @@ public class Order {
         this.purchaseDate = purchaseDate;
         
     }
-    public boolean addProduct(Product productToAdd) {
-        if (productToAdd != null) {
-            return listOfProducts.add(productToAdd);
+
+    public boolean verifyStock(ArrayList<Product> x){
+        for (Product p: x){
+            if(p.getAvailableAmount()-1<0){
+                return true;
+            }
         }
         return false;
     }
-    public boolean addProduct(ArrayList<Product> productToAdd) {
-        if (productToAdd != null) {
-            return listOfProducts.addAll(productToAdd);
+
+
+    private double calculateTotalAndBuy(ArrayList<Product> x){
+        double y = 0;
+        for (Product p: x){
+            y += p.getPrice();
+            p.buy();
         }
-        return false;
+        return y;
     }
+    
 }
