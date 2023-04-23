@@ -74,8 +74,11 @@ public class Product {
         this.purchasedTimes = purchasedTimes;
     }
 
-    public void increaseStock(int x){
-
+    public void increaseStock(int x) throws InvalidAmountException {
+        if(x<=0){
+            throw new InvalidAmountException();
+        }
+        this.availableAmount += x;
     }
 
     public void buy(){

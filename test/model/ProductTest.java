@@ -65,21 +65,30 @@ public class ProductTest {
     @Test
     public void increaseStock(){
         setupStage4();
-        p.get(4).increaseStock(5);
+        try {
+            p.get(4).increaseStock(5);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         assertEquals(p.get(4).getAvailableAmount(), 20);
     }
 
     @Test
     public void increaseStock1(){
         setupStage4();
-        p.get(4).increaseStock(-5);
-        assertEquals(p.get(4).getAvailableAmount(), 20);
+        assertThrows(InvalidAmountException.class, () -> {
+            p.get(4).increaseStock(-5);
+        });
     }
 
     @Test
     public void increaseStock2(){
         setupStage4();
-        p.get(4).increaseStock(0);
+        try {
+            p.get(4).increaseStock(0);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         assertEquals(p.get(4).getAvailableAmount(), 15);
     }
 }
