@@ -55,3 +55,15 @@ Densidad de errores-fallos = 21 / 38 = 0.55
 Confiabilidad = 1 - 0.55 = 0.45
 
 Completitud = 38 / 7 = 5.4
+
+-------------------------------------------------------------------
+## Commit 6
+
+### Commit 56bf150afebd7e937d1d4a889791597997914f76  
+
+Densidad de errores-fallos = 17 / 38 = 0.44
+
+Confiabilidad = 1 - 0.44 = 0.56
+
+Completitud = 38 / 7 = 5.4
+
