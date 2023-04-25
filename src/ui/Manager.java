@@ -82,7 +82,7 @@ public class Manager {
 
     public void registerOrder(){
         try {
-            System.out.println("Estas regitrando un pedido \n Ingresa el nombre del cliente");
+            System.out.println("Estas registrando un pedido \n Ingresa el nombre del cliente");
             String name = sc.nextLine();
             System.out.println("Ahora, ingresa los productos que quieres elegir");
             // no se me ocurre como hacer esto
