@@ -1,4 +1,6 @@
 package model;
+import exceptions.InvalidAmountException;
+import exceptions.InvalidPriceException;
 import exceptions.SearchNotFoundException;
 import org.junit.jupiter.api.Test;
 
@@ -6,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class ControllerTest {
     private static Controller controller;
@@ -23,19 +26,43 @@ public class ControllerTest {
         } catch (Exception e){
             e.printStackTrace();
         }
-
     }
 
+    public void setupStage5(){
+        controller = new Controller();
+        try{
+            ArrayList<Order> l = new ArrayList<>();
+            ArrayList<Product> p = new ArrayList<>();
+            p.add(new Product("Guante", "Buenardo, buen relieve", 12.50, 10, Category.CLOTHING_AND_ACCESORIES, 5));
+            p.add(new Product("Barnie", "Pequeño y suave", 15, 0, Category.TOYS_AND_GAMES, 5));
+            p.add(new Product("Camisa", "Grande", 10, 11, Category.CLOTHING_AND_ACCESORIES, 55));
+            p.add(new Product("Movie", "Aspera", 10, 0, Category.TOYS_AND_GAMES, 55));
+            p.add(new Product("Tablet", "Electronic device", 250, 15, Category.ELECTRONIC, 3));
+            controller.registerProduct(p);
+            ArrayList<Product> s = new ArrayList<>();
+            s.add(p.get(0));
+            l.add(new Order("Diaz", s));
+            ArrayList<Product> x = new ArrayList<>();
+            x.add(p.get(2));
+            l.add(new Order("Diaz", x));
+            ArrayList<Product> f = new ArrayList<>();
+            f.add(p.get(4));
+            l.add(new Order("Ñerby Hernandez", f));
+            controller.registerOrder(l);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
     @Test
     public void searchProductByName() throws SearchNotFoundException {
         setupStage4();
-        ArrayList<Product> test = controller.searchProductByName("Guante");
-        assertEquals("Guante", test.get(0).getName());
+        ArrayList<Product> test = controller.searchProductByName("Tablet");
+        assertEquals("Tablet", test.get(0).getName());
 
     }
 
     @Test
-    public void searchProductByPrice() throws SearchNotFoundException {
+    public void searchProductByPrice() throws SearchNotFoundException, InvalidPriceException {
         setupStage4();
         ArrayList<Product> test = controller.searchProductByPrice(15);
         assertEquals("Barnie", test.get(0).getName());
@@ -47,7 +74,7 @@ public class ControllerTest {
         assertEquals("Barnie, Movie", test.get(0).getName()+", "+test.get(1).getName());
     }
     @Test
-    public void searchProductByAmountAvailable() throws SearchNotFoundException {
+    public void searchProductByAmountAvailable() throws SearchNotFoundException, InvalidAmountException {
         setupStage4();
         ArrayList<Product> test = controller.searchProductByAvailableAmount(0);
         assertEquals("Barnie", test.get(0).getName());
@@ -60,7 +87,7 @@ public class ControllerTest {
         });
     }
     @Test
-    public void searchProductByPrice1() throws SearchNotFoundException {
+    public void searchProductByPrice1() throws SearchNotFoundException, InvalidPriceException {
         setupStage4();
         ArrayList<Product> test = controller.searchProductByPrice(10.0);
         assertEquals("Camisa, Movie", test.get(0).getName()+", "+test.get(1).getName());
@@ -106,13 +133,16 @@ public class ControllerTest {
 
 
     @Test
-    public void searchOrderBynameClient(){
-        assertTrue(false);
-
+    public void searchOrderBynameClient() throws SearchNotFoundException {
+        setupStage5();
+        ArrayList<Order> x = controller.searchOrderByClientName("Diaz");
+        assertEquals("Diaz, Diaz", x.get(0).getBuyersName() + ", " + x.get(1).getBuyersName());
     }
     @Test
-    public void searchOrderByPriceTotal(){
-        assertTrue(false);
+    public void searchOrderByPriceTotal() throws SearchNotFoundException, InvalidPriceException {
+        setupStage5();
+        ArrayList<Order> x = controller.searchOrderByTotalPrice(250);
+        assertEquals("Tablet", x.get(0).getListOfProducts().get(0).getName());
 
     }
     @Test
@@ -121,14 +151,20 @@ public class ControllerTest {
 
     }
     @Test
-    public void searchOrderBynameClient1(){
-        assertTrue(false);
+    public void searchOrderBynameClient1() throws SearchNotFoundException {
+        setupStage5();
+        assertThrows(SearchNotFoundException.class, () -> {
+            ArrayList<Order> x = controller.searchOrderByClientName("Lucila T");
 
+        });
     }
     @Test
     public void searchOrderByPriceTotal1(){
-        assertTrue(false);
+        setupStage5();
+        assertThrows(SearchNotFoundException.class, () -> {
+            ArrayList<Order> x = controller.searchOrderByTotalPrice(10223);
 
+        });
     }
     @Test
     public void searchOrderByDate1(){

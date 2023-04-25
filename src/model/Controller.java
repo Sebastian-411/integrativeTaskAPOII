@@ -110,7 +110,7 @@ public class Controller {
     public ArrayList<Product> searchProductByName(String goal) throws SearchNotFoundException {
         products.sort((a, b) -> {return a.getName().compareTo(b.getName());
         });
-        ArrayList<Product> x = binSearchProductByName(goal, 0, (products.size()/2), products.size()-1);
+        ArrayList<Product> x = binSearchProductByName(goal, 0, ((products.size()-1)/2), products.size()-1);
         if(x == null){
             throw new SearchNotFoundException();
         }
@@ -126,7 +126,7 @@ public class Controller {
                 }
             }
             return g;
-        } else if(end-begin == 1 ){
+        } else if(end-begin == 0 ){
             return null;
         } else if(products.get(mid).getName().compareToIgnoreCase(searchIt) >0){
             end = mid - 1;
@@ -134,10 +134,13 @@ public class Controller {
             begin = mid+1;
         }
         mid = (end+begin)/2;
+        System.out.println(mid);
         return binSearchProductByName(searchIt, begin, mid, end);
     }
-
-    public ArrayList<Product> searchProductByPrice(double goal) throws SearchNotFoundException {
+    public ArrayList<Product> searchProductByPrice(double goal) throws SearchNotFoundException, InvalidPriceException {
+        if(goal<0){
+            throw new InvalidPriceException();
+        }
         products.sort((a, b) -> {
             int criteria1 = (int) (a.getPrice()-b.getPrice());
             if(criteria1 == 0){
@@ -147,7 +150,7 @@ public class Controller {
             }
             return criteria1;
         });
-        ArrayList<Product> x = binSearchProductByPrice(goal, 0, (products.size()/2), products.size()-1);
+        ArrayList<Product> x = binSearchProductByPrice(goal, 0, ((products.size()-1)/2), products.size()-1);
         if(x == null){
             throw new SearchNotFoundException();
         }
@@ -163,7 +166,7 @@ public class Controller {
                 }
             }
             return g;
-        } else if(end-begin == 1 ){
+        } else if(end-begin == 0 ){
             return null;
         } else if(products.get(mid).getPrice() > (searchIt)){
             end = mid - 1;
@@ -173,7 +176,6 @@ public class Controller {
         mid = (end+begin)/2;
         return binSearchProductByPrice(searchIt, begin, mid, end);
     }
-
     public ArrayList<Product> searchProductByCategory(int i) throws SearchNotFoundException {
         ArrayList<Product> filteredProducts = new ArrayList<>();
         Category category = Category.values()[i];
@@ -195,7 +197,10 @@ public class Controller {
         }
         return x;
     }
-    public ArrayList<Product> searchProductByAvailableAmount(int goal) throws SearchNotFoundException {
+    public ArrayList<Product> searchProductByAvailableAmount(int goal) throws SearchNotFoundException, InvalidAmountException {
+        if(goal<0){
+            throw new InvalidAmountException();
+        }
         products.sort((a, b) -> {
             int criteria1 = a.getAvailableAmount() - b.getAvailableAmount();
             if(criteria1 == 0){
@@ -203,7 +208,7 @@ public class Controller {
             }
             return criteria1;
         });
-        ArrayList<Product> x = binSearchProductByAvailableAmount(goal, 0, (products.size()/2), products.size()-1);
+        ArrayList<Product> x = binSearchProductByAvailableAmount(goal, 0, ((products.size()-1)/2), products.size()-1);
         if(x == null){
             throw new SearchNotFoundException();
         }
@@ -229,5 +234,76 @@ public class Controller {
         mid = (end+begin)/2;
         return binSearchProductByAvailableAmount(searchIt, begin, mid, end);
     }
+    public ArrayList<Order> searchOrderByClientName(String goal) throws SearchNotFoundException {
+        orders.sort((a, b) -> {return a.getBuyersName().compareTo(b.getBuyersName());
+        });
+        ArrayList<Order> x = binsearchOrderByClientName(goal, 0, ((orders.size()-1)/2), orders.size()-1);
+        if(x == null){
+            throw new SearchNotFoundException();
+        }
+        return x;
+
+    }
+    private ArrayList<Order> binsearchOrderByClientName(String searchIt, int begin, int mid, int end){
+        if(orders.get(mid).getBuyersName().equalsIgnoreCase(searchIt)){
+            ArrayList<Order> g = new ArrayList<>();
+            for (int i = begin; i <= end; i++){
+                if(orders.get(i).getBuyersName().equalsIgnoreCase(searchIt)){
+                    g.add(orders.get(i));
+                }
+            }
+            return g;
+        } else if(end-begin == 0 ){
+            return null;
+        } else if(orders.get(mid).getBuyersName().compareToIgnoreCase(searchIt) >0){
+            end = mid - 1;
+        } else {
+            begin = mid+1;
+        }
+        mid = (end+begin)/2;
+        return binsearchOrderByClientName(searchIt, begin, mid, end);
+    }
+    public ArrayList<Order> searchOrderByTotalPrice(double goal) throws SearchNotFoundException, InvalidPriceException {
+        if(goal<0){
+            throw new InvalidPriceException();
+        }
+        orders.sort((a, b) -> {
+            int criteria1 = (int) (a.getTotalPrice()-b.getTotalPrice());
+            if(criteria1 == 0){
+                int x = (int)(a.getTotalPrice() - ((int)a.getTotalPrice()))*100;
+                int y = (int)(b.getTotalPrice() - ((int)b.getTotalPrice()))*100;
+                criteria1 = x-y;
+            }
+            return criteria1;
+        });
+        ArrayList<Order> x = binsearchOrderByTotalPrice(goal, 0, ((orders.size()-1)/2), orders.size()-1);
+        if(x == null){
+            throw new SearchNotFoundException();
+        }
+        return x;
+
+    }
+    private ArrayList<Order> binsearchOrderByTotalPrice(double searchIt, int begin, int mid, int end){
+        if(orders.get(mid).getTotalPrice() == (searchIt)){
+            ArrayList<Order> g = new ArrayList<>();
+            for (int i = begin; i <= end; i++){
+                if(orders.get(i).getTotalPrice()==(searchIt)){
+                    g.add(orders.get(i));
+                }
+            }
+            return g;
+        } else if(end-begin == 0 ){
+            return null;
+        } else if(orders.get(mid).getTotalPrice() > (searchIt)){
+            end = mid - 1;
+        } else {
+            begin = mid+1;
+        }
+        mid = (end+begin)/2;
+        return binsearchOrderByTotalPrice(searchIt, begin, mid, end);
+    }
+    // idk how to make search by date cuack cuack
+
+
 }
 
