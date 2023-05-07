@@ -1,0 +1,1 @@
+[{"name":"juan","description":"2","price":2.0,"availableAmount":47,"category":"CLOTHING_AND_ACCESORIES","purchasedTimes":7}]

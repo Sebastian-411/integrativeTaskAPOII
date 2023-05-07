@@ -8,13 +8,67 @@ import java.util.Arrays;
 import java.util.Collections;
 
 public class Controller {
-    private ArrayList<Order> orders = new ArrayList<>();
-    private ArrayList<Product> products = new ArrayList<>();
-    private String folder = "data";
-    private String order = "data/order.txt";
-    private String product = "data/product.txt";
+    private ArrayList<Order> orders;
+    private ArrayList<Product> products;
+    private final String folder = "data";
+    private final String order = "data/order.txt";
+    private final String product = "data/product.txt";
+
+    private ArrayList<Product> tmp = new ArrayList<Product>();
+    private ArrayList<Order> tmp2 = new ArrayList<Order>();
 
     public Controller() {
+        orders = new ArrayList<>();
+        products = new ArrayList<>();
+    }
+
+    public String searchOrderWithoutRange(int input, String goal) throws SearchNotFoundException, InvalidPriceException, InvalidAmountException {
+        switch (input){
+            case 1:
+                tmp2 = searchOrderByClientName(goal);
+                break;
+            case 2:
+                tmp2 = searchOrderByTotalPrice(Integer.parseInt(goal));
+                break;
+            case 3:
+                // tmp2 = searchOrderByDate(Double.parseDouble(goal)); Ajutar esto
+                break;
+
+            default:
+                return "Por favor ingresa una opcion valida";
+        }
+        String txt = "";
+        for (int i = 0; i < tmp.size(); i++){
+            txt = txt + i + ". " + tmp.get(i).getName() + ": " + tmp.get(i).getPrice() + "\n";
+        }
+        return txt;
+    }
+
+    public String searchProductWithoutRange(int input, String goal) throws SearchNotFoundException, InvalidPriceException, InvalidAmountException {
+        switch (input){
+            case 1:
+                tmp = searchProductByName(goal);
+                break;
+            case 2:
+                tmp = searchProductByCategory(Integer.parseInt(goal));
+                break;
+            case 3:
+                tmp = searchProductByPrice(Double.parseDouble(goal));
+                break;
+            case 4:
+                tmp = searchProductByAvailableAmount(Integer.parseInt(goal));
+                break;
+            case 5:
+                tmp = searchProductByPurchasedTime(Integer.parseInt(goal));
+                break;
+            default:
+                return "Por favor ingresa una opcion valida";
+        }
+        String txt = "";
+        for (int i = 0; i < tmp.size(); i++){
+            txt = txt + i + ". " + tmp.get(i).getName() + ": " + tmp.get(i).getPrice() + "\n";
+        }
+        return txt;
     }
 
     public boolean registerProduct(String name, String description, double price, int availableAmount, int category, int purchasedTimes) throws InvalidPriceException, InvalidAmountException {
@@ -22,6 +76,19 @@ public class Controller {
         return products.add(p);
     }
 
+    public boolean registerOrder(String name, ArrayList<Integer> productos, ArrayList<Integer> cantidades) throws ListEmptyException, InsufficientAmountException {
+        ArrayList<Product> products1 = new ArrayList<Product>();
+        for (int i = 0; i < productos.size(); i++){
+            if (tmp.get(productos.get(i)).getAvailableAmount() - cantidades.get(i) < 0){
+                throw new InsufficientAmountException();
+            }
+            for(int j = 0; j<cantidades.get(i); j++){
+                products1.add(tmp.get(productos.get(i)));
+            }
+        }
+        Order o = new Order(name, products1);
+        return orders.add(o);
+    }
     public String showCategory(){
         String txt = "";
         for (int i = 0; i < Category.values().length; i++){
@@ -42,7 +109,9 @@ public class Controller {
             }
             Gson gson = new Gson();
             Order[] array = gson.fromJson(content, Order[].class);
-            Collections.addAll(orders, array);
+            if(array != null){
+                Collections.addAll(orders, array);
+            }
             fis.close();
         }else{
             File f = new File(folder);
@@ -65,7 +134,9 @@ public class Controller {
             }
             Gson gson = new Gson();
             Product[] array = gson.fromJson(content, Product[].class);
-            Collections.addAll(products, array);
+            if(array != null){
+                Collections.addAll(products, array);
+            }
             fis.close();
         }else{
             File f = new File(folder);
@@ -108,7 +179,8 @@ public class Controller {
     }
 
     public ArrayList<Product> searchProductByName(String goal) throws SearchNotFoundException {
-        productsSortByName();
+        products.sort((a, b) -> {return a.getName().compareTo(b.getName());
+        });
         ArrayList<Product> x = binSearchProductByName(goal, 0, ((products.size()-1)/2), products.size()-1);
         if(x == null){
             throw new SearchNotFoundException();
@@ -133,13 +205,22 @@ public class Controller {
             begin = mid+1;
         }
         mid = (end+begin)/2;
+        System.out.println(mid);
         return binSearchProductByName(searchIt, begin, mid, end);
     }
     public ArrayList<Product> searchProductByPrice(double goal) throws SearchNotFoundException, InvalidPriceException {
         if(goal<0){
             throw new InvalidPriceException();
         }
-        productsSortByPrice();
+        products.sort((a, b) -> {
+            int criteria1 = (int) (a.getPrice()-b.getPrice());
+            if(criteria1 == 0){
+                int x = (int)(a.getPrice() - ((int)a.getPrice()))*100;
+                int y = (int)(b.getPrice() - ((int)b.getPrice()))*100;
+                criteria1 = x-y;
+            }
+            return criteria1;
+        });
         ArrayList<Product> x = binSearchProductByPrice(goal, 0, ((products.size()-1)/2), products.size()-1);
         if(x == null){
             throw new SearchNotFoundException();
@@ -214,7 +295,7 @@ public class Controller {
                 }
             }
             return g;
-        } else if(end-begin == 1 ){
+        } else if(end-begin == 0 ){
             return null;
         } else if(products.get(mid).getAvailableAmount() > (searchIt)){
             end = mid - 1;
@@ -223,6 +304,42 @@ public class Controller {
         }
         mid = (end+begin)/2;
         return binSearchProductByAvailableAmount(searchIt, begin, mid, end);
+    }
+    public ArrayList<Product> searchProductByPurchasedTime(int goal) throws InvalidAmountException, SearchNotFoundException {
+        if(goal<0){
+            throw new InvalidAmountException();
+        }
+        products.sort((a, b) -> {
+            int criteria1 = a.getPurchasedTimes()-(b.getPurchasedTimes());
+            if(criteria1 == 0){
+                criteria1 = a.getName().compareTo(b.getName());
+            }
+            return criteria1;
+        });
+        ArrayList<Product>  tmp = binSearchProductByPurchaseTime(goal, 0, ((products.size()-1)/2), products.size()-1);
+        if(tmp == null){
+            throw new SearchNotFoundException();
+        }
+        return tmp;
+    }
+    private ArrayList<Product> binSearchProductByPurchaseTime(int searchIt, int begin, int mid, int end){
+        if(products.get(mid).getPurchasedTimes() == (searchIt)){
+            ArrayList<Product> g = new ArrayList<>();
+            for (int i = begin; i <= end; i++){
+                if(products.get(i).getPurchasedTimes()==(searchIt)){
+                    g.add(products.get(i));
+                }
+            }
+            return g;
+        } else if(end-begin == 1 ){
+            return null;
+        } else if(products.get(mid).getPurchasedTimes() > (searchIt)){
+            end = mid - 1;
+        } else {
+            begin = mid+1;
+        }
+        mid = (end+begin)/2;
+        return binSearchProductByPurchaseTime(searchIt, begin, mid, end);
     }
     public ArrayList<Order> searchOrderByClientName(String goal) throws SearchNotFoundException {
         orders.sort((a, b) -> {return a.getBuyersName().compareTo(b.getBuyersName());
@@ -292,153 +409,10 @@ public class Controller {
         mid = (end+begin)/2;
         return binsearchOrderByTotalPrice(searchIt, begin, mid, end);
     }
-    // IDK how to make search by date cuack cuack
+    // idk how to make search by date cuack cuack
 
-    public ArrayList<Product> searchRangeProductByPrice(double upperLimit, double lowerLimit) throws SearchNotFoundException, InvalidPriceException {
-        if(upperLimit<0 || lowerLimit<0){
-            throw new InvalidPriceException();
-        }
-        productsSortByPrice();
-        ArrayList<Product> listOfProductsFound = binSearchProductByPriceRange(upperLimit, lowerLimit, 0, ((products.size()-1)/2), products.size()-1);
-        if(listOfProductsFound == null){
-            throw new SearchNotFoundException();
-        }
-        return listOfProductsFound;
-
-    }
-
-
-
-    private ArrayList<Product> binSearchProductByPriceRange(double upperLimit, double lowerLimit, int begin, int mid, int end){
-        if(products.get(mid).getPrice() <= (upperLimit) && products.get(mid).getPrice() >= (lowerLimit)){
-            ArrayList<Product> listOfProductsFound = new ArrayList<>();
-            for (int i = begin; i <= end; i++){
-                if(products.get(i).getPrice() <= (upperLimit) && products.get(i).getPrice() >= (lowerLimit)){
-                    listOfProductsFound.add(products.get(i));
-                }
-            }
-            return listOfProductsFound;
-        } else if(end-begin == 0 ){
-            return null;
-        } else if(products.get(mid).getPrice() > (upperLimit)){
-            end = mid - 1;
-        } else if(products.get(mid).getPrice() < (lowerLimit)){
-            begin = mid + 1;
-        }
-        mid = (end+begin)/2;
-        return binSearchProductByPriceRange(upperLimit, lowerLimit, begin, mid, end);
-    }
-
-    private void productsSortByPrice() {
-        products.sort((a, b) -> {
-            int criteria1 = (int) (a.getPrice()-b.getPrice());
-            if(criteria1 == 0){
-                int x = (int)(a.getPrice() - ((int)a.getPrice()))*100;
-                int y = (int)(b.getPrice() - ((int)b.getPrice()))*100;
-                criteria1 = x-y;
-            }
-            return criteria1;
-        });
-    }
-    private void productsSortByName(){
-        products.sort((a, b) -> {return a.getName().compareTo(b.getName());});
-    }
-
-
-
-    public ArrayList<Product> searchRangeProductByName(String upperLimit, String lowerLimit) throws SearchNotFoundException {
-        productsSortByName();
-
-        ArrayList<Product> listOfProductsFound = binSearchProductByRangeName(upperLimit, lowerLimit, 0, ((products.size()-1)/2), products.size()-1);
-        if(listOfProductsFound == null){
-            throw new SearchNotFoundException();
-        }
-        return listOfProductsFound;
-
-    }
-    private ArrayList<Product> binSearchProductByRangeName(String upperLimit, String lowerLimit, int begin, int mid, int end){
-        if(products.get(mid).getName().compareToIgnoreCase(lowerLimit) >= 0 && products.get(mid).getName().compareToIgnoreCase(upperLimit) <= 0){
-            ArrayList<Product> listOfProductsFound = new ArrayList<>();
-            for (int i = begin; i <= end; i++){
-                if(products.get(i).getName().compareToIgnoreCase(lowerLimit) >= 0 && products.get(i).getName().compareToIgnoreCase(upperLimit) <= 0){
-                    listOfProductsFound.add(products.get(i));
-                }
-            }
-            return listOfProductsFound;
-        } else if(end-begin == 0 ){
-            return null;
-        } else if(products.get(mid).getName().compareToIgnoreCase(upperLimit) >0){
-            end = mid - 1;
-        } else if(products.get(mid).getName().compareToIgnoreCase(lowerLimit) <0){
-            begin = mid+1;
-        }
-        mid = (end+begin)/2;
-        return binSearchProductByRangeName(upperLimit, lowerLimit, begin, mid, end);
-    }
-
-
-    public ArrayList<Product> searchRangeProductByAvailableAmount(int upperLimit, int lowerLimit) throws SearchNotFoundException, InvalidAmountException {
-        if(upperLimit < 0 || lowerLimit < 0){
-            throw new InvalidAmountException();
-        }
-        products.sort((a, b) -> {
-            int criteria1 = a.getAvailableAmount() - b.getAvailableAmount();
-            if(criteria1 == 0){
-                criteria1 = a.getName().compareTo(b.getName());
-            }
-            return criteria1;
-        });
-
-
-
-        ArrayList<Product> listOfProductsFound = new ArrayList<>();
-
-
-        int begin = 0;
-        int end = products.size() - 1;
-        while (begin <= end){
-            int mid = (end+begin)/2;
-            if(products.get(mid).getAvailableAmount() <= (upperLimit) && products.get(mid).getAvailableAmount() >= (lowerLimit)){
-                for (int i = mid; i >= begin; i--) {
-                    if ((products.get(i).getAvailableAmount() <= (upperLimit) && products.get(i).getAvailableAmount() >= (lowerLimit))){
-                        listOfProductsFound.add(products.get(i));
-                    }
-                }
-                for (int i = mid+1; i <= end ; i++) {
-                    listOfProductsFound.add(products.get(i));
-                }
-                return listOfProductsFound;
-            }else if(lowerLimit > (products.get(mid).getAvailableAmount())){
-                begin = mid+1;
-            }else if(upperLimit < (products.get(mid).getAvailableAmount())){
-                end = mid-1;
-            }
-        }
-
-        if(listOfProductsFound == null){
-            throw new SearchNotFoundException();
-        }
-        return listOfProductsFound;
-
-    }
-    private ArrayList<Product> binSearchProductByRangeAvailableAmount(int upperLimit, int lowerLimit, int begin, int mid, int end){
-        if(products.get(mid).getAvailableAmount() <= (upperLimit) && products.get(mid).getAvailableAmount() >= (lowerLimit)){
-            ArrayList<Product> listOfProductsFound = new ArrayList<>();
-            for (int i = begin; i <= end; i++){
-                if(products.get(mid).getAvailableAmount() <= (upperLimit) && products.get(mid).getAvailableAmount() >= (lowerLimit)){
-                    listOfProductsFound.add(products.get(i));
-                }
-            }
-            return listOfProductsFound;
-        } else if(end-begin == 0 ){
-            return null;
-        } else if(products.get(mid).getAvailableAmount() > (upperLimit)){
-            end = mid - 1;
-        } else if(products.get(mid).getAvailableAmount() < (lowerLimit)){
-            begin = mid + 1;
-        }
-        mid = (end+begin)/2;
-        return binSearchProductByRangeAvailableAmount(upperLimit, lowerLimit, begin, mid, end);
+    public void increaseStock(int i, int amount) throws InvalidAmountException {
+        tmp.get(i).increaseStock(amount);
     }
 
 }
