@@ -18,7 +18,13 @@ public class Manager {
     public static void main(String[] args) {
         Manager m = new Manager();
         m.init();
-        m.menu();
+        try {
+            while (true) {
+                m.menu();
+            }
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void init(){
@@ -30,7 +36,7 @@ public class Manager {
         }
     }
 
-    public void menu(){
+    public void menu() throws IOException {
         System.out.println("Bienvenido a Mercadolibre Beta\n" +
                 "Que podemos hacer por ti?\n" +
                 "\t1. Registrar un producto\n" +
@@ -44,19 +50,75 @@ public class Manager {
                 registerProduct();
                 break;
             case 2:
-                registerOrder();
+                increaseStock();
                 break;
             case 3:
+                registerOrder();
                 break;
             case 4:
+                System.out.println("1. Busqueda por rango \n 2. Busqueda sin rango");
+                switch (Integer.valueOf(sc.nextLine())) {
+                    case 1:
+                        searchProductWithRange();
+                        break;
+                    case 2:
+                        searchProductWithoutRange();
+                        break;
+                    default:
+                        System.out.println("Por favor ingresa una opcion valida");
+                        menu();
+                }
                 break;
             case 5:
+                System.out.println("1. Busqueda por rango \n 2. Busqueda sin rango");
+                switch (Integer.valueOf(sc.nextLine())) {
+                    case 1:
+                        searchOrderWithRange();
+                        break;
+                    case 2:
+                        searchOrderWithoutRange();
+                        break;
+                    default:
+                        System.out.println("Por favor ingresa una opcion valida");
+                        menu();
+                }
+
                 break;
             case 6:
+                controller.saveProduct();
+                controller.saveOrder();
+                System.exit(0);
                 break;
             default:
                 System.out.println("Por favor ingresa una opcion valida");
         }
+    }
+    
+    public void increaseStock(){
+        try {
+            System.out.println("1. Busqueda por rango \n 2. Busqueda sin rango");
+            switch (Integer.valueOf(sc.nextLine())) {
+                case 1:
+                    searchProductWithRange();
+                    break;
+                case 2:
+                    searchProductWithoutRange();
+                    break;
+                default:
+                    System.out.println("Por favor ingresa una opcion valida");
+                    menu();
+            }
+            System.out.println("Ingresa el id del producto que desea aumentar el inventario");
+            int id = Integer.parseInt(sc.nextLine());
+            System.out.println("Ingresa la cantidad que desea aumentar");
+            int amount = Integer.parseInt(sc.nextLine());
+            controller.increaseStock(id, amount);
+            controller.saveProduct();
+            System.out.println("Se ha cambiado con exito!");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
     public void registerProduct(){
         try {
@@ -90,12 +152,12 @@ public class Manager {
             String name = sc.nextLine();
             System.out.println("Busca un producto");
             System.out.println("1. Busqueda por rango \n 2. Busqueda sin rango");
-            switch (sc.nextInt()){
+            switch (Integer.valueOf(sc.nextLine())){
                 case 1:
-                    SearchProductWithRange();
+                    searchProductWithRange();
                     break;
                 case 2:
-                    SearchProductWithoutRange();
+                    searchProductWithoutRange();
                     break;
                 default:
                     System.out.println("Por favor ingresa una opcion valida");
@@ -104,15 +166,18 @@ public class Manager {
             System.out.println("Ingresa el id del producto que desea comprar");
             ArrayList<Integer> productos = new ArrayList<>();
             ArrayList<Integer> cantidades = new ArrayList<>();
-            while(sc.nextLine().equalsIgnoreCase("Si")) {
-                productos.add(sc.nextInt());
+            String x = "Si";
+            while(!x.equalsIgnoreCase("NO")) {
+                productos.add(Integer.valueOf(sc.nextLine()));
                 System.out.println("Ingresa la cantidad que desea comprar");
-                cantidades.add(sc.nextInt());
+                cantidades.add(Integer.valueOf(sc.nextLine()));
                 System.out.println("Desear agregar otro producto? Si/No");
+                x = sc.nextLine();
             }
             if(controller.registerOrder(name, productos, cantidades)){
                 System.out.println("El pedido fue creado con exito");
                 controller.saveOrder();
+                controller.saveProduct();
             } else {
                 System.out.println("Ha ocurrido un error:(");
             }
@@ -121,7 +186,7 @@ public class Manager {
         }
     }
 
-    public void SearchProductWithoutRange(){
+    public void searchProductWithoutRange(){
         try {
             System.out.println("1. Buscar producto por nombre" + "\n" +
                     "2. Buscar producto por categoria" + "\n" +
@@ -131,15 +196,37 @@ public class Manager {
             int x = Integer.parseInt(sc.nextLine());
             System.out.println("Ingresa el valor a buscar");
             String y = sc.nextLine();
-            System.out.println(controller.searchProduct(x, y));
+            System.out.println(controller.searchProductWithoutRange(x, y));
         } catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    public void SearchProductWithRange(){
-
+    public void searchProductWithRange(){
+        try {
+            System.out.println("1. Buscar nombre de productos por rango de letras" + "\n" +
+                    "2. Buscar productos por rango de precio" + "\n" +
+                    "4. Buscar producto por rango de cantidad disponible" + "\n" +
+                    "5. Buscar producto por rango de cantidad vendida");
+            int x = Integer.parseInt(sc.nextLine());
+            System.out.println("Ingresa el valor a buscar");
+            String y = sc.nextLine();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
+    public void searchOrderWithoutRange(){
+        try{
+            System.out.println("1. Buscar pedido por nombre de cliente" + "\n" +
+                    "2. Buscar pedido por precio total" + "\n" +
+                    "2. Buscar pedido por fecha de pedido");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    public void searchOrderWithRange(){
+
+    }
     
 }
