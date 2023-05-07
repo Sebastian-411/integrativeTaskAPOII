@@ -96,32 +96,46 @@ public class ControllerTest {
 
 
     @Test
-    public void searchRangeProductByName(){
-        assertTrue(false);
+    public void searchRangeProductByName() throws SearchNotFoundException {
+        setupStage4();
+        ArrayList<Product> test = controller.searchRangeProductByName("D","A");
+        assertEquals("Barnie, Camisa", test.get(0).getName()+", "+test.get(1).getName() );
+
 
     }
     @Test
-    public void searchRangeProductByPrice(){
-        assertTrue(false);
+    public void searchRangeProductByPrice() throws InvalidPriceException, SearchNotFoundException {
+        setupStage4();
+        ArrayList<Product> test = controller.searchRangeProductByPrice(11,9);
+        assertEquals("Camisa, Movie", test.get(0).getName()+", "+test.get(1).getName() );
 
     }
     @Test
-    public void searchRangeProductByAmountAvailable(){
-        assertTrue(false);
+    public void searchRangeProductByAmountAvailable() throws SearchNotFoundException, InvalidAmountException {
+        setupStage4();
+        ArrayList<Product> test = controller.searchRangeProductByAvailableAmount(14,10);
+        assertEquals("Guante, Camisa", test.get(0).getName()+", "+test.get(1).getName() );
 
     }
     @Test
-    public void searchRangeProductByName1(){
-        assertTrue(false);
+    public void searchRangeProductByName1() throws SearchNotFoundException {
+        setupStage4();
+        assertThrows(SearchNotFoundException.class, () -> {
+            ArrayList<Product> x = controller.searchRangeProductByName("Z","X");
+        });
 
     }
     @Test
-    public void searchRangeProductByPrice1(){
-        assertTrue(false);
+    public void searchRangeProductByPrice1() throws InvalidPriceException, SearchNotFoundException {
+
+
 
     }
     @Test
     public void searchRangeProductByPrice2(){
+
+
+
         assertTrue(false);
 
     }
