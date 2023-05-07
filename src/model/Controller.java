@@ -14,7 +14,47 @@ public class Controller {
     private String order = "data/order.txt";
     private String product = "data/product.txt";
 
+    private ArrayList<Product> tmp = new ArrayList<Product>();
+    private ArrayList<Order> tmp2 = new ArrayList<Order>();
+
     public Controller() {
+    }
+
+    public String searchProduct(int input, String goal) throws SearchNotFoundException, InvalidPriceException, InvalidAmountException {
+        switch (input){
+            case 1:
+                tmp = searchProductByName(goal);
+                break;
+            case 2:
+                tmp = searchProductByCategory(Integer.parseInt(goal));
+                break;
+            case 3:
+                tmp = searchProductByPrice(Double.parseDouble(goal));
+                break;
+            case 4:
+                tmp = searchProductByAvailableAmount(Integer.parseInt(goal));
+                break;
+            case 5:
+                tmp = searchProductByPurchasedTime(Integer.parseInt(goal));
+                break;
+            default:
+                return "Por favor ingresa una opcion valida";
+        }
+        String txt = "";
+        for (int i = 0; i < tmp.size(); i++){
+            txt = txt + tmp.get(i).getName() + ": " + tmp.get(i).getPrice() + "\n";
+        }
+        return txt;
+    }
+
+    public String selectProduct(int input){ // ajustar para comprar
+        String txt = "";
+        for (int i = 0; i < tmp.size(); i++){
+            if (i == input){
+                txt = txt + tmp.get(i).getName() + ": " + tmp.get(i).getPrice() + "\n";
+            }
+        }
+        return txt;
     }
 
     public boolean registerProduct(String name, String description, double price, int availableAmount, int category, int purchasedTimes) throws InvalidPriceException, InvalidAmountException {
@@ -233,6 +273,42 @@ public class Controller {
         }
         mid = (end+begin)/2;
         return binSearchProductByAvailableAmount(searchIt, begin, mid, end);
+    }
+    public ArrayList<Product> searchProductByPurchasedTime(int goal) throws InvalidAmountException, SearchNotFoundException {
+        if(goal<0){
+            throw new InvalidAmountException();
+        }
+        products.sort((a, b) -> {
+            int criteria1 = a.getPurchasedTimes()-(b.getPurchasedTimes());
+            if(criteria1 == 0){
+                criteria1 = a.getName().compareTo(b.getName());
+            }
+            return criteria1;
+        });
+        ArrayList<Product>  tmp = binSearchProductByPurchaseTime(goal, 0, ((products.size()-1)/2), products.size()-1);
+        if(tmp == null){
+            throw new SearchNotFoundException();
+        }
+        return tmp;
+    }
+    private ArrayList<Product> binSearchProductByPurchaseTime(int searchIt, int begin, int mid, int end){
+        if(products.get(mid).getPurchasedTimes() == (searchIt)){
+            ArrayList<Product> g = new ArrayList<>();
+            for (int i = begin; i <= end; i++){
+                if(products.get(i).getPurchasedTimes()==(searchIt)){
+                    g.add(products.get(i));
+                }
+            }
+            return g;
+        } else if(end-begin == 1 ){
+            return null;
+        } else if(products.get(mid).getPurchasedTimes() > (searchIt)){
+            end = mid - 1;
+        } else {
+            begin = mid+1;
+        }
+        mid = (end+begin)/2;
+        return binSearchProductByPurchaseTime(searchIt, begin, mid, end);
     }
     public ArrayList<Order> searchOrderByClientName(String goal) throws SearchNotFoundException {
         orders.sort((a, b) -> {return a.getBuyersName().compareTo(b.getBuyersName());

@@ -39,7 +39,6 @@ public class Manager {
                 "\t6. Salir");
         switch (sc.nextInt()){
             case 1:
-
                 break;
             case 2:
                 break;
@@ -84,9 +83,24 @@ public class Manager {
         try {
             System.out.println("Estas registrando un pedido \n Ingresa el nombre del cliente");
             String name = sc.nextLine();
-            System.out.println("Ahora, ingresa los productos que quieres elegir");
-            // no se me ocurre como hacer esto
+            System.out.println("Busca un producto");
+            System.out.println("1. Busqueda por rango \n 2. Busqueda sin rango");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
+    public void SearchProductWithoutRange(){
+        try {
+            System.out.println("1. Buscar producto por nombre" + "\n" +
+                    "2. Buscar producto por categoria" + "\n" +
+                    "3. Buscar producto por precio" + "\n" +
+                    "4. Buscar producto por cantidad disponible" + "\n" +
+                    "5. Buscar producto por cantidad vendida");
+            int x = sc.nextInt();
+            sc.nextLine();
+            String y = sc.nextLine();
+            System.out.println(controller.searchProduct(x, y));
         } catch (Exception e){
             e.printStackTrace();
         }
