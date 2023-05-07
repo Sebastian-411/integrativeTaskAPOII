@@ -8,19 +8,43 @@ import java.util.Arrays;
 import java.util.Collections;
 
 public class Controller {
-    private ArrayList<Order> orders = new ArrayList<>();
-    private ArrayList<Product> products = new ArrayList<>();
-    private String folder = "data";
-    private String order = "data/order.txt";
-    private String product = "data/product.txt";
+    private ArrayList<Order> orders;
+    private ArrayList<Product> products;
+    private final String folder = "data";
+    private final String order = "data/order.txt";
+    private final String product = "data/product.txt";
 
     private ArrayList<Product> tmp = new ArrayList<Product>();
     private ArrayList<Order> tmp2 = new ArrayList<Order>();
 
     public Controller() {
+        orders = new ArrayList<>();
+        products = new ArrayList<>();
     }
 
-    public String searchProduct(int input, String goal) throws SearchNotFoundException, InvalidPriceException, InvalidAmountException {
+    public String searchOrderWithoutRange(int input, String goal) throws SearchNotFoundException, InvalidPriceException, InvalidAmountException {
+        switch (input){
+            case 1:
+                tmp2 = searchOrderByClientName(goal);
+                break;
+            case 2:
+                tmp2 = searchOrderByTotalPrice(Integer.parseInt(goal));
+                break;
+            case 3:
+                // tmp2 = searchOrderByDate(Double.parseDouble(goal)); Ajutar esto
+                break;
+
+            default:
+                return "Por favor ingresa una opcion valida";
+        }
+        String txt = "";
+        for (int i = 0; i < tmp.size(); i++){
+            txt = txt + i + ". " + tmp.get(i).getName() + ": " + tmp.get(i).getPrice() + "\n";
+        }
+        return txt;
+    }
+
+    public String searchProductWithoutRange(int input, String goal) throws SearchNotFoundException, InvalidPriceException, InvalidAmountException {
         switch (input){
             case 1:
                 tmp = searchProductByName(goal);
@@ -42,17 +66,7 @@ public class Controller {
         }
         String txt = "";
         for (int i = 0; i < tmp.size(); i++){
-            txt = txt + tmp.get(i).getName() + ": " + tmp.get(i).getPrice() + "\n";
-        }
-        return txt;
-    }
-
-    public String selectProduct(int input){ // ajustar para comprar
-        String txt = "";
-        for (int i = 0; i < tmp.size(); i++){
-            if (i == input){
-                txt = txt + tmp.get(i).getName() + ": " + tmp.get(i).getPrice() + "\n";
-            }
+            txt = txt + i + ". " + tmp.get(i).getName() + ": " + tmp.get(i).getPrice() + "\n";
         }
         return txt;
     }
@@ -62,6 +76,19 @@ public class Controller {
         return products.add(p);
     }
 
+    public boolean registerOrder(String name, ArrayList<Integer> productos, ArrayList<Integer> cantidades) throws ListEmptyException, InsufficientAmountException {
+        ArrayList<Product> products1 = new ArrayList<Product>();
+        for (int i = 0; i < productos.size(); i++){
+            if (tmp.get(productos.get(i)).getAvailableAmount() - cantidades.get(i) < 0){
+                throw new InsufficientAmountException();
+            }
+            for(int j = 0; j<cantidades.get(i); j++){
+                products1.add(tmp.get(productos.get(i)));
+            }
+        }
+        Order o = new Order(name, products1);
+        return orders.add(o);
+    }
     public String showCategory(){
         String txt = "";
         for (int i = 0; i < Category.values().length; i++){
@@ -82,7 +109,9 @@ public class Controller {
             }
             Gson gson = new Gson();
             Order[] array = gson.fromJson(content, Order[].class);
-            Collections.addAll(orders, array);
+            if(array != null){
+                Collections.addAll(orders, array);
+            }
             fis.close();
         }else{
             File f = new File(folder);
@@ -105,7 +134,9 @@ public class Controller {
             }
             Gson gson = new Gson();
             Product[] array = gson.fromJson(content, Product[].class);
-            Collections.addAll(products, array);
+            if(array != null){
+                Collections.addAll(products, array);
+            }
             fis.close();
         }else{
             File f = new File(folder);
@@ -264,7 +295,7 @@ public class Controller {
                 }
             }
             return g;
-        } else if(end-begin == 1 ){
+        } else if(end-begin == 0 ){
             return null;
         } else if(products.get(mid).getAvailableAmount() > (searchIt)){
             end = mid - 1;
@@ -380,6 +411,9 @@ public class Controller {
     }
     // idk how to make search by date cuack cuack
 
+    public void increaseStock(int i, int amount) throws InvalidAmountException {
+        tmp.get(i).increaseStock(amount);
+    }
 
 }
 
