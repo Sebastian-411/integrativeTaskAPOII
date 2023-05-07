@@ -8,16 +8,18 @@ import java.util.Arrays;
 import java.util.Collections;
 
 public class Controller {
-    private ArrayList<Order> orders = new ArrayList<>();
-    private ArrayList<Product> products = new ArrayList<>();
-    private String folder = "data";
-    private String order = "data/order.txt";
-    private String product = "data/product.txt";
+    private ArrayList<Order> orders;
+    private ArrayList<Product> products;
+    private final String folder = "data";
+    private final String order = "data/order.txt";
+    private final String product = "data/product.txt";
 
     private ArrayList<Product> tmp = new ArrayList<Product>();
     private ArrayList<Order> tmp2 = new ArrayList<Order>();
 
     public Controller() {
+        orders = new ArrayList<>();
+        products = new ArrayList<>();
     }
 
     public String searchProduct(int input, String goal) throws SearchNotFoundException, InvalidPriceException, InvalidAmountException {
@@ -47,21 +49,21 @@ public class Controller {
         return txt;
     }
 
-    public String selectProduct(int input){ // ajustar para comprar
-        String txt = "";
-        for (int i = 0; i < tmp.size(); i++){
-            if (i == input){
-                txt = txt + tmp.get(i).getName() + ": " + tmp.get(i).getPrice() + "\n";
-            }
-        }
-        return txt;
-    }
-
     public boolean registerProduct(String name, String description, double price, int availableAmount, int category, int purchasedTimes) throws InvalidPriceException, InvalidAmountException {
         Product p = new Product(name, description, price, availableAmount, Category.values()[category], purchasedTimes);
         return products.add(p);
     }
 
+    public boolean registerOrder(String name, ArrayList<Integer> productos, ArrayList<Integer> cantidades) throws ListEmptyException, InsufficientAmountException {
+        ArrayList<Product> products1 = new ArrayList<Product>();
+        for (int i = 0; i < productos.size(); i++){
+            for(int j = 0; j<cantidades.get(i); i++){
+                products.add(tmp.get(productos.get(i)));
+            }
+        }
+        Order o = new Order(name, products1);
+        return orders.add(o);
+    }
     public String showCategory(){
         String txt = "";
         for (int i = 0; i < Category.values().length; i++){
