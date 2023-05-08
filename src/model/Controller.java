@@ -452,12 +452,16 @@ public class Controller {
     }
     // idk how to make search by date cuack cuack
 
-    public void increaseStock(int i, int amount) throws InvalidAmountException {
+    public void increaseStock(int i, int amount) throws InvalidAmountException  {
         tmp.get(i).increaseStock(amount);
     }
-    public ArrayList<Product> searchRangeProductByPrice(double upperLimit, double lowerLimit) throws SearchNotFoundException, InvalidPriceException {
+    public ArrayList<Product> searchRangeProductByPrice(double upperLimit, double lowerLimit) throws SearchNotFoundException, InvalidPriceException , InvalidRangeException{
         if(upperLimit<0 || lowerLimit<0){
             throw new InvalidPriceException();
+        }
+
+        if (upperLimit <= lowerLimit) {
+            throw new InvalidRangeException();
         }
         productsSortByPrice();
         ArrayList<Product> listOfProductsFound = binSearchProductByPriceRange(upperLimit, lowerLimit, 0, ((products.size()-1)/2), products.size()-1);
@@ -601,10 +605,16 @@ public class Controller {
         orders.sort((a, b) -> {return a.getBuyersName().compareTo(b.getBuyersName());});
     }
 
-    public ArrayList<Order> searchRangeOrderByTotalPrice(double upperLimit, double lowerLimit) throws SearchNotFoundException, InvalidPriceException {
+    public ArrayList<Order> searchRangeOrderByTotalPrice(double upperLimit, double lowerLimit) throws SearchNotFoundException, InvalidPriceException , InvalidRangeException{
+
+        if (upperLimit <= lowerLimit){
+            throw new InvalidRangeException();
+        }
+
         if(upperLimit<0 || lowerLimit<0){
             throw new InvalidPriceException();
         }
+
         ordersSortByPrice();
         //orders.forEach(o -> System.out.println(o.getTotalPrice()));
 
@@ -654,7 +664,7 @@ public class Controller {
         //orders.forEach(p -> System.out.println(p.getBuyersName() + "\n"));
 
         ArrayList<Order> listOfOrdersFound = binSearchOrderByRangeBuyerName(upperLimit, lowerLimit);
-        if(listOfOrdersFound == null){
+        if(listOfOrdersFound == null || listOfOrdersFound.size() == 0){
             throw new SearchNotFoundException();
         }
         return listOfOrdersFound;
@@ -687,6 +697,9 @@ public class Controller {
         }
         return  listOfOrdersFound;
     }
+
+
+
 
 
 
