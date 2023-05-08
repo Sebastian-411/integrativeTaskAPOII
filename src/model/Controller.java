@@ -38,8 +38,29 @@ public class Controller {
                 return "Por favor ingresa una opcion valida";
         }
         String txt = "";
-        for (int i = 0; i < tmp.size(); i++){
-            txt = txt + i + ". " + tmp.get(i).getName() + ": " + tmp.get(i).getPrice() + "\n";
+        for (int i = 0; i < tmp2.size(); i++){
+            txt = txt + i + ". " + tmp2.get(i).getBuyersName() + ": " + tmp2.get(i).getTotalPrice() + tmp2.get(i).getPurchaseDate().toString() + "\n";
+        }
+        return txt;
+    }
+
+    public String searchOrderWithRange(int input, String lowerLimit, String upperLimit) throws SearchNotFoundException, InvalidPriceException, InvalidAmountException {
+        switch (input) {
+            case 1:
+                tmp2 = searchRangeOrderByBuyerName(lowerLimit, upperLimit);
+                break;
+            case 2:
+                tmp2 = searchRangeOrderByTotalPrice(Double.parseDouble(lowerLimit), Double.parseDouble(upperLimit));
+                break;
+            case 3:
+                // tmp2 = searchRangeOrderByDate(Double.parseDouble(lowerLimit), Double.parseDouble(upperLimit)); Ajutar esto
+                break;
+            default:
+                return "Por favor ingresa una opcion valida";
+        }
+        String txt = "";
+        for (int i = 0; i < tmp2.size(); i++){
+            txt = txt + i + ". " + tmp2.get(i).getBuyersName() + ": " + tmp2.get(i).getTotalPrice() + tmp2.get(i).getPurchaseDate().toString() + "\n";
         }
         return txt;
     }
@@ -71,20 +92,40 @@ public class Controller {
         return txt;
     }
 
+
+    public String searchProductWithRange(int input, String lowerLimit, String upperLimit) throws SearchNotFoundException, InvalidPriceException, InvalidAmountException {
+        switch (input) {
+            case 1:
+                tmp = searchRangeProductByName(lowerLimit, upperLimit);
+                break;
+            case 2:
+                tmp = searchRangeProductByPrice(Double.parseDouble(lowerLimit), Double.parseDouble(upperLimit));
+                break;
+            case 3:
+                tmp = searchRangeProductByAvailableAmount(Integer.parseInt(lowerLimit), Integer.parseInt(upperLimit));
+                break;
+            default:
+                return "Por favor ingresa una opcion valida";
+        }
+        String txt = "";
+        for (int i = 0; i < tmp.size(); i++){
+            txt = txt + i + ". " + tmp.get(i).getName() + ": " + tmp.get(i).getPrice() + "\n";
+        }
+        return txt;
+    }
+
     public boolean registerProduct(String name, String description, double price, int availableAmount, int category, int purchasedTimes) throws InvalidPriceException, InvalidAmountException {
         Product p = new Product(name, description, price, availableAmount, Category.values()[category], purchasedTimes);
         return products.add(p);
     }
 
-    public boolean registerOrder(String name, ArrayList<Integer> productos, ArrayList<Integer> cantidades) throws ListEmptyException, InsufficientAmountException {
-        ArrayList<Product> products1 = new ArrayList<Product>();
-        for (int i = 0; i < productos.size(); i++){
-            if (tmp.get(productos.get(i)).getAvailableAmount() - cantidades.get(i) < 0){
-                throw new InsufficientAmountException();
-            }
-            for(int j = 0; j<cantidades.get(i); j++){
-                products1.add(tmp.get(productos.get(i)));
-            }
+    public boolean registerOrder(String name, int producto, int cantidad) throws ListEmptyException, InsufficientAmountException {
+        ArrayList<Product> products1 = new ArrayList<>();
+        if (tmp.get(producto).getAvailableAmount() - cantidad < 0){
+            throw new InsufficientAmountException();
+        }
+        for(int j = 0; j<cantidad; j++){
+            products1.add(tmp.get(producto));
         }
         Order o = new Order(name, products1);
         return orders.add(o);
@@ -477,7 +518,7 @@ public class Controller {
 
     }
     private ArrayList<Product> binSearchProductByRangeName(String upperLimit, String lowerLimit, int begin, int mid, int end){
-        if(String.valueOf(products.get(mid).getName().charAt(0)).compareToIgnoreCase(lowerLimit) >= 0 && String.valueOf(products.get(mid).getName().charAt(0)).compareToIgnoreCase(upperLimit) <= 0){
+        if(String.valueOf(products.get(mid).getName().charAt(0)).compareToIgnoreCase(lowerLimit) > 0 && String.valueOf(products.get(mid).getName().charAt(0)).compareToIgnoreCase(upperLimit) < 0){
             ArrayList<Product> listOfProductsFound = new ArrayList<>();
             for (int i = begin; i <= end; i++){
                 if(String.valueOf(products.get(i).getName().charAt(0)).compareToIgnoreCase(lowerLimit) >= 0 && String.valueOf(products.get(i).getName().charAt(0)).compareToIgnoreCase(upperLimit) <= 0){
@@ -485,7 +526,7 @@ public class Controller {
                 }
             }
             return listOfProductsFound;
-        } else if(end-begin == 0 ){
+        } else if(end-begin == 0){
             return null;
         } else if(String.valueOf(products.get(mid).getName().charAt(0)).compareToIgnoreCase(upperLimit) >0){
             end = mid - 1;
