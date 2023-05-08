@@ -89,3 +89,25 @@ Confiabilidad = 1 - 0.24 = 0.76
 
 Completitud = 38 / 7 = 5.4
 
+-------------------------------------------------------------------
+## Commit 9
+
+### Commit 9e33adeeda11e82bd04ed73e051bed23493c87f9
+
+Densidad de errores-fallos = 4 / 38 = 0.1
+
+Confiabilidad = 1 - 0.1 = 0.9
+
+Completitud = 38 / 7 = 5.4
+
+-------------------------------------------------------------------
+## Commit 10
+
+### Commit cf11e93eabcfed44d966ec271fb4c60a31a3cbe2
+
+Densidad de errores-fallos = 0 / 38 = 0
+
+Confiabilidad = 1 - 0 = 1
+
+Completitud = 38 / 7 = 5.4
+
