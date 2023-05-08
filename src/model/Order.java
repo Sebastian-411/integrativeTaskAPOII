@@ -1,6 +1,10 @@
 package model;
 import exceptions.InsufficientAmountException;
 import exceptions.ListEmptyException;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -18,7 +22,15 @@ public class Order {
         }
         this.buyersName = buyersName;
         this.totalPrice = calculateTotalAndBuy(p);
-        this.purchaseDate = new Date();
+
+        LocalDate local = LocalDate.now();
+
+        try {
+            this.purchaseDate = new SimpleDateFormat("dd/MM/yyyy").parse(local.getDayOfMonth()+"/"+local.getMonthValue()+"/"+local.getYear());
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
         this.listOfProducts = p;
     }
     public String getBuyersName() {

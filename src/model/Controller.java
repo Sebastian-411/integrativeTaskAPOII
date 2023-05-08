@@ -3,9 +3,13 @@ import com.google.gson.Gson;
 import exceptions.*;
 
 import java.io.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 
 public class Controller {
     private ArrayList<Order> orders;
@@ -577,12 +581,9 @@ public class Controller {
         ordersSortByPrice();
         //orders.forEach(o -> System.out.println(o.getTotalPrice()));
 
-
-
         ArrayList<Order> listOfOrdersFound = binSearchRangeOrderByTotalPrice(upperLimit, lowerLimit);
 
-
-
+        
         if(listOfOrdersFound == null || listOfOrdersFound.size() == 0){
             throw new SearchNotFoundException();
         }
@@ -595,7 +596,7 @@ public class Controller {
 
 
         int begin = 0;
-        int end = products.size() - 1;
+        int end = orders.size() - 1;
         while (begin <= end){
             int mid = (end+begin)/2;
             if(orders.get(mid).getTotalPrice() <= (upperLimit) && orders.get(mid).getTotalPrice() >= (lowerLimit)){
@@ -658,7 +659,44 @@ public class Controller {
     }
 
 
+    public ArrayList<Order> searchOrderByDate(String dateToSearch) throws ParseException, SearchNotFoundException {
 
+        DateFormat format= new SimpleDateFormat("dd/MM/yyyy");
+        Date dateGoal = format.parse(dateToSearch);
+        //System.out.println(dateGoal.toString());
+        orders.sort((a, b) -> {return a.getPurchaseDate().compareTo(b.getPurchaseDate());});
+        //orders.forEach(p -> System.out.println(p.getPurchaseDate().toString()));
+
+        ArrayList<Order> listOfOrdersFound = new ArrayList<>();
+
+        int begin = 0;
+        int end = orders.size() - 1;
+        while (begin <= end){
+            int mid = (end+begin)/2;
+            Date midDate = orders.get(mid).getPurchaseDate();
+            if(midDate.equals(dateGoal)){
+                for (int i = begin; i <= end; i++) {
+                    Date iDate = orders.get(mid).getPurchaseDate();
+                    if (iDate.equals(dateGoal)){
+                        listOfOrdersFound.add(orders.get(mid));
+                    }
+                }
+                return listOfOrdersFound;
+            }else if(dateGoal.after(midDate)){
+                begin = mid+1;
+            }else if(dateGoal.before(midDate)){
+                end = mid-1;
+            }
+            listOfOrdersFound.forEach(p -> System.out.println(p.getPurchaseDate().toString()));
+        }
+
+        if(listOfOrdersFound == null || listOfOrdersFound.size() == 0){
+            throw new SearchNotFoundException();
+        }
+        return listOfOrdersFound;
+
+
+    }
 
 
 
