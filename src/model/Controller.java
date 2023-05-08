@@ -477,19 +477,19 @@ public class Controller {
 
     }
     private ArrayList<Product> binSearchProductByRangeName(String upperLimit, String lowerLimit, int begin, int mid, int end){
-        if(products.get(mid).getName().compareToIgnoreCase(lowerLimit) >= 0 && products.get(mid).getName().compareToIgnoreCase(upperLimit) <= 0){
+        if(String.valueOf(products.get(mid).getName().charAt(0)).compareToIgnoreCase(lowerLimit) >= 0 && String.valueOf(products.get(mid).getName().charAt(0)).compareToIgnoreCase(upperLimit) <= 0){
             ArrayList<Product> listOfProductsFound = new ArrayList<>();
             for (int i = begin; i <= end; i++){
-                if(products.get(i).getName().compareToIgnoreCase(lowerLimit) >= 0 && products.get(i).getName().compareToIgnoreCase(upperLimit) <= 0){
+                if(String.valueOf(products.get(i).getName().charAt(0)).compareToIgnoreCase(lowerLimit) >= 0 && String.valueOf(products.get(i).getName().charAt(0)).compareToIgnoreCase(upperLimit) <= 0){
                     listOfProductsFound.add(products.get(i));
                 }
             }
             return listOfProductsFound;
         } else if(end-begin == 0 ){
             return null;
-        } else if(products.get(mid).getName().compareToIgnoreCase(upperLimit) >0){
+        } else if(String.valueOf(products.get(mid).getName().charAt(0)).compareToIgnoreCase(upperLimit) >0){
             end = mid - 1;
-        } else if(products.get(mid).getName().compareToIgnoreCase(lowerLimit) <0){
+        } else if(String.valueOf(products.get(mid).getName().charAt(0)).compareToIgnoreCase(lowerLimit) <0){
             begin = mid+1;
         }
         mid = (end+begin)/2;
@@ -541,6 +541,112 @@ public class Controller {
         return listOfProductsFound;
 
     }
+
+
+    //////////////// Order
+
+    private void ordersSortByPrice() {
+        orders.sort((a, b) -> {
+            int criteria1 = (int) (a.getTotalPrice()-b.getTotalPrice());
+            if(criteria1 == 0){
+                int x = (int)(a.getTotalPrice() - ((int)a.getTotalPrice()))*100;
+                int y = (int)(b.getTotalPrice() - ((int)b.getTotalPrice()))*100;
+                criteria1 = x-y;
+            }
+            return criteria1;
+        });
+    }
+    private void ordersSortByBuyersName(){
+        orders.sort((a, b) -> {return a.getBuyersName().compareTo(b.getBuyersName());});
+    }
+
+    public ArrayList<Order> searchRangeOrderByTotalPrice(double upperLimit, double lowerLimit) throws SearchNotFoundException, InvalidPriceException {
+        if(upperLimit<0 || lowerLimit<0){
+            throw new InvalidPriceException();
+        }
+        ordersSortByPrice();
+        //orders.forEach(o -> System.out.println(o.getTotalPrice()));
+
+
+
+        ArrayList<Order> listOfOrdersFound = binSearchRangeOrderByTotalPrice(upperLimit, lowerLimit);
+
+
+
+        if(listOfOrdersFound == null || listOfOrdersFound.size() == 0){
+            throw new SearchNotFoundException();
+        }
+        return listOfOrdersFound;
+
+    }
+
+    private ArrayList<Order> binSearchRangeOrderByTotalPrice(double upperLimit, double lowerLimit){
+        ArrayList<Order> listOfOrdersFound = new ArrayList<>();
+
+
+        int begin = 0;
+        int end = products.size() - 1;
+        while (begin <= end){
+            int mid = (end+begin)/2;
+            if(orders.get(mid).getTotalPrice() <= (upperLimit) && orders.get(mid).getTotalPrice() >= (lowerLimit)){
+                for (int i = mid; i >= begin; i--) {
+                    if ((orders.get(i).getTotalPrice() <= (upperLimit) && orders.get(i).getTotalPrice() >= (lowerLimit))){
+                        listOfOrdersFound.add(orders.get(i));
+                    }
+                }
+                for (int i = mid+1; i <= end ; i++) {
+                    listOfOrdersFound.add(orders.get(i));
+                }
+                return listOfOrdersFound;
+            }else if(lowerLimit > (orders.get(mid).getTotalPrice())){
+                begin = mid+1;
+            }else if(upperLimit < (orders.get(mid).getTotalPrice())){
+                end = mid-1;
+            }
+        }
+        return  listOfOrdersFound;
+    }
+
+
+    public ArrayList<Order> searchRangeOrderByBuyerName(String upperLimit, String lowerLimit) throws SearchNotFoundException {
+        ordersSortByBuyersName();
+        //orders.forEach(p -> System.out.println(p.getBuyersName() + "\n"));
+
+        ArrayList<Order> listOfOrdersFound = binSearchOrderByRangeBuyerName(upperLimit, lowerLimit);
+        if(listOfOrdersFound == null){
+            throw new SearchNotFoundException();
+        }
+        return listOfOrdersFound;
+
+    }
+    private ArrayList<Order> binSearchOrderByRangeBuyerName(String upperLimit, String lowerLimit){
+        ArrayList<Order> listOfOrdersFound = new ArrayList<>();
+
+        int begin = 0;
+        int end = orders.size() - 1;
+        while (begin <= end){
+            int mid = (end+begin)/2;
+            if(String.valueOf(orders.get(mid).getBuyersName().charAt(0)).compareToIgnoreCase(lowerLimit) >= 0 && String.valueOf(orders.get(mid).getBuyersName().charAt(0)).compareToIgnoreCase(upperLimit) <= 0){
+                for (int i = mid; i >= begin; i--) {
+                    if (String.valueOf(orders.get(i).getBuyersName().charAt(0)).compareToIgnoreCase(lowerLimit) >= 0 && String.valueOf(orders.get(i).getBuyersName().charAt(0)).compareToIgnoreCase(upperLimit) <= 0){
+                        listOfOrdersFound.add(orders.get(i));
+                    }
+                }
+                for (int i = mid+1; i <= end ; i++) {
+                    if (String.valueOf(orders.get(i).getBuyersName().charAt(0)).compareToIgnoreCase(lowerLimit) >= 0 && String.valueOf(orders.get(i).getBuyersName().charAt(0)).compareToIgnoreCase(upperLimit) <= 0){
+                        listOfOrdersFound.add(orders.get(i));
+                    }
+                }
+                return listOfOrdersFound;
+            }else if(String.valueOf(orders.get(mid).getBuyersName().charAt(0)).compareToIgnoreCase(lowerLimit) <0){
+                begin = mid+1;
+            }else if(String.valueOf(orders.get(mid).getBuyersName().charAt(0)).compareToIgnoreCase(upperLimit) >0){
+                end = mid-1;
+            }
+        }
+        return  listOfOrdersFound;
+    }
+
 
 
 }
