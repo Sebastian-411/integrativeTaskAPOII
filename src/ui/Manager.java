@@ -214,7 +214,9 @@ public class Manager {
             String y = sc.nextLine();
             System.out.println("Ingresa el limite superior del rango a buscar");
             String z = sc.nextLine();
-            System.out.println(controller.searchProductWithRange(x, y, z));
+            System.out.println("1. Ascendente 2. Descendente");
+            int w = Integer.parseInt(sc.nextLine());
+            System.out.println(controller.searchProductWithRange(x, y, z, w));
         } catch (Exception e){
             e.printStackTrace();
             menu();
@@ -225,7 +227,14 @@ public class Manager {
         try{
             System.out.println("1. Buscar pedido por nombre de cliente" + "\n" +
                     "2. Buscar pedido por precio total" + "\n" +
-                    "2. Buscar pedido por fecha de pedido");
+                    "3. Buscar pedido por fecha de pedido");
+            int x = Integer.parseInt(sc.nextLine());
+            if(x == 3){
+                System.out.println("El formato de la fecha es dd/mm/yyyy");
+            }
+            System.out.println("Ingresa el valor a buscar");
+            String y = sc.nextLine();
+            System.out.println(controller.searchOrderWithoutRange(x, y));
         } catch (Exception e){
             e.printStackTrace();
             menu();
@@ -233,9 +242,16 @@ public class Manager {
     }
     public void searchOrderWithRange() throws IOException {
         try {
-            System.out.println("1. Buscar pedido por rango de nombres de compradores" +
-                    "2. Buscar pedido por rango de precio total" + "\n" +
-                    "3. Buscar pedido por rango de fecha de pedido");
+            System.out.println("1. Buscar pedido por rango de nombres de compradores\n" +
+                    "2. Buscar pedido por rango de precio total" );
+            int x = Integer.parseInt(sc.nextLine());
+            System.out.println("Ingresa el valor inferior a buscar");
+            String y = sc.nextLine();
+            System.out.println("Ingresa el valor superior a buscar");
+            String z = sc.nextLine();
+            System.out.println("1. Ascendente 2. Descendente");
+            int w = Integer.parseInt(sc.nextLine());
+            System.out.println(controller.searchOrderWithRange(x, y, z, w));
         } catch (Exception e){
             e.printStackTrace();
             menu();

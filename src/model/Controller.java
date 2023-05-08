@@ -31,7 +31,7 @@ public class Controller {
                 tmp2 = searchOrderByTotalPrice(Integer.parseInt(goal));
                 break;
             case 3:
-                // tmp2 = searchOrderByDate(Double.parseDouble(goal)); Ajutar esto
+                //tmp2 = searchOrderByDate(Double.parseDouble(goal));
                 break;
 
             default:
@@ -44,7 +44,7 @@ public class Controller {
         return txt;
     }
 
-    public String searchOrderWithRange(int input, String lowerLimit, String upperLimit) throws SearchNotFoundException, InvalidPriceException, InvalidAmountException, InvalidRangeException {
+    public String searchOrderWithRange(int input, String lowerLimit, String upperLimit, int ascodes) throws SearchNotFoundException, InvalidPriceException, InvalidAmountException, InvalidRangeException {
         switch (input) {
             case 1:
                 tmp2 = searchRangeOrderByBuyerName(upperLimit, lowerLimit);
@@ -52,13 +52,11 @@ public class Controller {
             case 2:
                 tmp2 = searchRangeOrderByTotalPrice(Double.parseDouble(upperLimit), Double.parseDouble(lowerLimit));
                 break;
-            case 3:
-                // tmp2 = searchRangeOrderByDate(Double.parseDouble(upperLimit), Double.parseDouble(lowerLimit)); Ajutar esto
-                break;
             default:
                 return "Por favor ingresa una opcion valida";
         }
         String txt = "";
+        if(ascodes == 2)  Collections.reverse(tmp);
         for (int i = 0; i < tmp2.size(); i++){
             txt = txt + i + ". " + tmp2.get(i).getBuyersName() + ": " + tmp2.get(i).getTotalPrice() + tmp2.get(i).getPurchaseDate().toString() + "\n";
         }
@@ -93,7 +91,7 @@ public class Controller {
     }
 
 
-    public String searchProductWithRange(int input, String lowerLimit, String upperLimit) throws SearchNotFoundException, InvalidPriceException, InvalidAmountException, InvalidRangeException {
+    public String searchProductWithRange(int input, String lowerLimit, String upperLimit, int ascodes) throws SearchNotFoundException, InvalidPriceException, InvalidAmountException, InvalidRangeException {
         switch (input) {
             case 1:
                 tmp = searchRangeProductByName(upperLimit, lowerLimit);
@@ -107,9 +105,10 @@ public class Controller {
             default:
                 return "Por favor ingresa una opcion valida";
         }
+        if(ascodes == 2)  Collections.reverse(tmp);
         String txt = "";
         for (int i = 0; i < tmp.size(); i++){
-            txt = txt + i + ". " + tmp.get(i).getName() + ": " + tmp.get(i).getPrice() + "\n";
+            txt = txt + i + ". " + tmp.get(i).getName() + ": " + "Precio: "+tmp.get(i).getPrice() + "Cantidad: " + tmp.get(i).getAvailableAmount() + "\n";
         }
         return txt;
     }
@@ -522,7 +521,7 @@ public class Controller {
 
     }
     private ArrayList<Product> binSearchProductByRangeName(String upperLimit, String lowerLimit, int begin, int mid, int end){
-        if(String.valueOf(products.get(mid).getName().charAt(0)).compareToIgnoreCase(lowerLimit) > 0 && String.valueOf(products.get(mid).getName().charAt(0)).compareToIgnoreCase(upperLimit) < 0){
+        if(String.valueOf(products.get(mid).getName().charAt(0)).compareToIgnoreCase(lowerLimit) >= 0 && String.valueOf(products.get(mid).getName().charAt(0)).compareToIgnoreCase(upperLimit) <= 0){
             ArrayList<Product> listOfProductsFound = new ArrayList<>();
             for (int i = begin; i <= end; i++){
                 if(String.valueOf(products.get(i).getName().charAt(0)).compareToIgnoreCase(lowerLimit) >= 0 && String.valueOf(products.get(i).getName().charAt(0)).compareToIgnoreCase(upperLimit) <= 0){
