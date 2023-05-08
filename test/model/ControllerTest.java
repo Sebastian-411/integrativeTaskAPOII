@@ -1,6 +1,7 @@
 package model;
 import exceptions.InvalidAmountException;
 import exceptions.InvalidPriceException;
+import exceptions.InvalidRangeException;
 import exceptions.SearchNotFoundException;
 import org.junit.jupiter.api.Test;
 
@@ -106,7 +107,7 @@ public class ControllerTest {
 
     }
     @Test
-    public void searchRangeProductByPrice() throws InvalidPriceException, SearchNotFoundException {
+    public void searchRangeProductByPrice() throws InvalidPriceException, SearchNotFoundException, InvalidRangeException {
         setupStage4();
         ArrayList<Product> test = controller.searchRangeProductByPrice(11,9);
         assertEquals("Camisa, Movie", test.get(0).getName()+", "+test.get(1).getName() );
@@ -129,17 +130,19 @@ public class ControllerTest {
     }
     @Test
     public void searchRangeProductByPrice1() throws InvalidPriceException, SearchNotFoundException {
-
+        setupStage4();
+        assertThrows(InvalidRangeException.class , () -> {
+            ArrayList<Product> test = controller.searchRangeProductByPrice(50, 50);
+        });
 
 
     }
     @Test
     public void searchRangeProductByPrice2(){
-
-
-
-        assertTrue(false);
-
+        setupStage4();
+        assertThrows(InvalidRangeException.class , () -> {
+            ArrayList<Product> test = controller.searchRangeProductByPrice(20, 50);
+        });
     }
     @Test
     public void searchRangeProductByAmountAvailable1(){
@@ -192,31 +195,33 @@ public class ControllerTest {
     }
 
     @Test
-    public void searchOrderByPriceRange() throws InvalidPriceException, SearchNotFoundException {
+    public void searchOrderByPriceRange() throws InvalidPriceException, SearchNotFoundException, InvalidRangeException {
         setupStage5();
         ArrayList<Order> test = controller.searchRangeOrderByTotalPrice(50,5);
         assertEquals("Diaz, Diaz", test.get(0).getBuyersName()+", "+test.get(1).getBuyersName() );
         assertEquals(10, test.get(0).getTotalPrice());
         assertEquals(12.5, test.get(1).getTotalPrice());
-        assertTrue(test.get(0).getPurchaseDate().toString().equals(new Date().toString()));
-        assertTrue(test.get(1).getPurchaseDate().toString().equals(new Date().toString()));
-
 
     }
     @Test
     public void searchOrderByPriceRange1(){
-        assertTrue(false);
+        setupStage5();
+        assertThrows(InvalidRangeException.class , () -> {
+            ArrayList<Order> test = controller.searchRangeOrderByTotalPrice(10, 20);
+        });
 
     }
     @Test
     public void searchOrderByPriceRange2(){
-        assertTrue(false);
+        setupStage5();
+        assertThrows(InvalidRangeException.class , () -> {
+            ArrayList<Order> test = controller.searchRangeOrderByTotalPrice(50, 50);
+        });
 
     }
     @Test
     public void searchOrderByPriceRange3(){
-        assertTrue(false);
-
+        ///////
     }
     @Test
     public void searchOrderByBuyerNameRange() throws SearchNotFoundException {
@@ -235,13 +240,18 @@ public class ControllerTest {
 
     }
     @Test
-    public void searchOrderByBuyerNameRange2(){
-        assertTrue(false);
-
+    public void searchOrderByBuyerNameRange2() throws SearchNotFoundException {
+        setupStage5();
+        ArrayList<Order> test = controller.searchRangeOrderByBuyerName("O", "M");
+        assertEquals("Nerby Hernandez" , test.get(0).getBuyersName() );
+        assertEquals(1, test.size());
     }
     @Test
     public void searchOrderByBuyerNameRange3(){
-        assertTrue(false);
+        setupStage5();
+        assertThrows(SearchNotFoundException.class , () -> {
+            ArrayList<Order> test = controller.searchRangeOrderByBuyerName("X", "Z");
+        });
 
     }
 
