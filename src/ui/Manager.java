@@ -56,7 +56,7 @@ public class Manager {
                 registerOrder();
                 break;
             case 4:
-                System.out.println("1. Busqueda por rango \n 2. Busqueda sin rango");
+                System.out.println("1. Busqueda por rango \n2. Busqueda sin rango");
                 switch (Integer.valueOf(sc.nextLine())) {
                     case 1:
                         searchProductWithRange();
@@ -70,7 +70,7 @@ public class Manager {
                 }
                 break;
             case 5:
-                System.out.println("1. Busqueda por rango \n 2. Busqueda sin rango");
+                System.out.println("1. Busqueda por rango \n2. Busqueda sin rango");
                 switch (Integer.valueOf(sc.nextLine())) {
                     case 1:
                         searchOrderWithRange();
@@ -96,7 +96,7 @@ public class Manager {
     
     public void increaseStock(){
         try {
-            System.out.println("1. Busqueda por rango \n 2. Busqueda sin rango");
+            System.out.println("1. Busqueda por rango \n2. Busqueda sin rango");
             switch (Integer.valueOf(sc.nextLine())) {
                 case 1:
                     searchProductWithRange();
@@ -146,12 +146,16 @@ public class Manager {
         }
     }
 
-    public void registerOrder(){
+    public void registerOrder() throws IOException {
         try {
             System.out.println("Estas registrando un pedido \n Ingresa el nombre del cliente");
             String name = sc.nextLine();
+            String x = "Si";
+            int cantidad = 0;
+            int producto = 0;
+            while(!x.equalsIgnoreCase("NO")) {
             System.out.println("Busca un producto");
-            System.out.println("1. Busqueda por rango \n 2. Busqueda sin rango");
+            System.out.println("1. Busqueda por rango \n2. Busqueda sin rango");
             switch (Integer.valueOf(sc.nextLine())){
                 case 1:
                     searchProductWithRange();
@@ -163,18 +167,14 @@ public class Manager {
                     System.out.println("Por favor ingresa una opcion valida");
                     menu();
             }
-            System.out.println("Ingresa el id del producto que desea comprar");
-            ArrayList<Integer> productos = new ArrayList<>();
-            ArrayList<Integer> cantidades = new ArrayList<>();
-            String x = "Si";
-            while(!x.equalsIgnoreCase("NO")) {
-                productos.add(Integer.valueOf(sc.nextLine()));
+                System.out.println("Ingresa el id del producto que desea comprar");
+                producto = Integer.parseInt(sc.nextLine());
                 System.out.println("Ingresa la cantidad que desea comprar");
-                cantidades.add(Integer.valueOf(sc.nextLine()));
+                cantidad = Integer.parseInt(sc.nextLine());
                 System.out.println("Desear agregar otro producto? Si/No");
                 x = sc.nextLine();
             }
-            if(controller.registerOrder(name, productos, cantidades)){
+            if(controller.registerOrder(name, producto, cantidad)){
                 System.out.println("El pedido fue creado con exito");
                 controller.saveOrder();
                 controller.saveProduct();
@@ -183,10 +183,11 @@ public class Manager {
             }
         } catch (Exception e){
             e.printStackTrace();
+            menu();
         }
     }
 
-    public void searchProductWithoutRange(){
+    public void searchProductWithoutRange() throws IOException {
         try {
             System.out.println("1. Buscar producto por nombre" + "\n" +
                     "2. Buscar producto por categoria" + "\n" +
@@ -194,39 +195,68 @@ public class Manager {
                     "4. Buscar producto por cantidad disponible" + "\n" +
                     "5. Buscar producto por cantidad vendida");
             int x = Integer.parseInt(sc.nextLine());
+            if(x == 2) System.out.println(controller.showCategory());
             System.out.println("Ingresa el valor a buscar");
             String y = sc.nextLine();
             System.out.println(controller.searchProductWithoutRange(x, y));
         } catch (Exception e){
             e.printStackTrace();
+            menu();
         }
     }
 
-    public void searchProductWithRange(){
+    public void searchProductWithRange() throws IOException {
         try {
             System.out.println("1. Buscar nombre de productos por rango de letras" + "\n" +
                     "2. Buscar productos por rango de precio" + "\n" +
-                    "4. Buscar producto por rango de cantidad disponible" + "\n" +
-                    "5. Buscar producto por rango de cantidad vendida");
+                    "3. Buscar producto por rango de cantidad disponible" + "\n");
             int x = Integer.parseInt(sc.nextLine());
-            System.out.println("Ingresa el valor a buscar");
+            System.out.println("Ingresa el limite inferios del rango a buscar");
             String y = sc.nextLine();
+            System.out.println("Ingresa el limite superior del rango a buscar");
+            String z = sc.nextLine();
+            System.out.println("1. Ascendente 2. Descendente");
+            int w = Integer.parseInt(sc.nextLine());
+            System.out.println(controller.searchProductWithRange(x, y, z, w));
         } catch (Exception e){
             e.printStackTrace();
+            menu();
         }
     }
 
-    public void searchOrderWithoutRange(){
+    public void searchOrderWithoutRange() throws IOException {
         try{
             System.out.println("1. Buscar pedido por nombre de cliente" + "\n" +
                     "2. Buscar pedido por precio total" + "\n" +
-                    "2. Buscar pedido por fecha de pedido");
+                    "3. Buscar pedido por fecha de pedido");
+            int x = Integer.parseInt(sc.nextLine());
+            if(x == 3){
+                System.out.println("El formato de la fecha es dd/mm/yyyy");
+            }
+            System.out.println("Ingresa el valor a buscar");
+            String y = sc.nextLine();
+            System.out.println(controller.searchOrderWithoutRange(x, y));
         } catch (Exception e){
             e.printStackTrace();
+            menu();
         }
     }
-    public void searchOrderWithRange(){
-
+    public void searchOrderWithRange() throws IOException {
+        try {
+            System.out.println("1. Buscar pedido por rango de nombres de compradores\n" +
+                    "2. Buscar pedido por rango de precio total" );
+            int x = Integer.parseInt(sc.nextLine());
+            System.out.println("Ingresa el valor inferior a buscar");
+            String y = sc.nextLine();
+            System.out.println("Ingresa el valor superior a buscar");
+            String z = sc.nextLine();
+            System.out.println("1. Ascendente 2. Descendente");
+            int w = Integer.parseInt(sc.nextLine());
+            System.out.println(controller.searchOrderWithRange(x, y, z, w));
+        } catch (Exception e){
+            e.printStackTrace();
+            menu();
+        }
     }
     
 }

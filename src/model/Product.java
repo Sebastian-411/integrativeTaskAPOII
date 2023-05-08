@@ -2,7 +2,7 @@ package model;
 
 import exceptions.*;
 
-public class Product {
+public class Product{
     private String name;
     private String description;
     private double price;
@@ -95,4 +95,5 @@ public class Product {
                 "category= " + category.toString() + '\n' +
                 "purchasedTimes= " + purchasedTimes;
     }
+
 }
