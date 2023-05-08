@@ -78,3 +78,14 @@ Confiabilidad = 1 - 0.34 = 0.66
 
 Completitud = 38 / 7 = 5.4
 
+-------------------------------------------------------------------
+## Commit 7
+
+### Commit ff769629fe96b9a9f44475bebd9eeb86f75111fd
+
+Densidad de errores-fallos = 9 / 38 = 0.24
+
+Confiabilidad = 1 - 0.24 = 0.76
+
+Completitud = 38 / 7 = 5.4
+
