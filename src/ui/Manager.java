@@ -208,8 +208,7 @@ public class Manager {
         try {
             System.out.println("1. Buscar nombre de productos por rango de letras" + "\n" +
                     "2. Buscar productos por rango de precio" + "\n" +
-                    "4. Buscar producto por rango de cantidad disponible" + "\n" +
-                    "5. Buscar producto por rango de cantidad vendida");
+                    "3. Buscar producto por rango de cantidad disponible" + "\n");
             int x = Integer.parseInt(sc.nextLine());
             System.out.println("Ingresa el limite inferios del rango a buscar");
             String y = sc.nextLine();

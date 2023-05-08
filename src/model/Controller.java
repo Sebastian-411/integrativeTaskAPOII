@@ -44,16 +44,16 @@ public class Controller {
         return txt;
     }
 
-    public String searchOrderWithRange(int input, String lowerLimit, String upperLimit) throws SearchNotFoundException, InvalidPriceException, InvalidAmountException {
+    public String searchOrderWithRange(int input, String lowerLimit, String upperLimit) throws SearchNotFoundException, InvalidPriceException, InvalidAmountException, InvalidRangeException {
         switch (input) {
             case 1:
-                tmp2 = searchRangeOrderByBuyerName(lowerLimit, upperLimit);
+                tmp2 = searchRangeOrderByBuyerName(upperLimit, lowerLimit);
                 break;
             case 2:
-                tmp2 = searchRangeOrderByTotalPrice(Double.parseDouble(lowerLimit), Double.parseDouble(upperLimit));
+                tmp2 = searchRangeOrderByTotalPrice(Double.parseDouble(upperLimit), Double.parseDouble(lowerLimit));
                 break;
             case 3:
-                // tmp2 = searchRangeOrderByDate(Double.parseDouble(lowerLimit), Double.parseDouble(upperLimit)); Ajutar esto
+                // tmp2 = searchRangeOrderByDate(Double.parseDouble(upperLimit), Double.parseDouble(lowerLimit)); Ajutar esto
                 break;
             default:
                 return "Por favor ingresa una opcion valida";
@@ -93,16 +93,16 @@ public class Controller {
     }
 
 
-    public String searchProductWithRange(int input, String lowerLimit, String upperLimit) throws SearchNotFoundException, InvalidPriceException, InvalidAmountException {
+    public String searchProductWithRange(int input, String lowerLimit, String upperLimit) throws SearchNotFoundException, InvalidPriceException, InvalidAmountException, InvalidRangeException {
         switch (input) {
             case 1:
-                tmp = searchRangeProductByName(lowerLimit, upperLimit);
+                tmp = searchRangeProductByName(upperLimit, lowerLimit);
                 break;
             case 2:
-                tmp = searchRangeProductByPrice(Double.parseDouble(lowerLimit), Double.parseDouble(upperLimit));
+                tmp = searchRangeProductByPrice(Double.parseDouble(upperLimit),Double.parseDouble(lowerLimit));
                 break;
             case 3:
-                tmp = searchRangeProductByAvailableAmount(Integer.parseInt(lowerLimit), Integer.parseInt(upperLimit));
+                tmp = searchRangeProductByAvailableAmount(Integer.parseInt(upperLimit), Integer.parseInt(lowerLimit));
                 break;
             default:
                 return "Por favor ingresa una opcion valida";
