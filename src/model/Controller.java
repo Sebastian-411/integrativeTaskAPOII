@@ -85,7 +85,7 @@ public class Controller {
         }
         String txt = "";
         for (int i = 0; i < tmp.size(); i++){
-            txt = txt + i + ". " + tmp.get(i).getName() + ": " + tmp.get(i).getPrice() + "\n";
+            txt = txt + i + ". " + tmp.get(i).getName() + ": " + "Precio: "+tmp.get(i).getPrice() + " Cantidad: " + tmp.get(i).getAvailableAmount() + "\n";
         }
         return txt;
     }
@@ -108,7 +108,7 @@ public class Controller {
         if(ascodes == 2)  Collections.reverse(tmp);
         String txt = "";
         for (int i = 0; i < tmp.size(); i++){
-            txt = txt + i + ". " + tmp.get(i).getName() + ": " + "Precio: "+tmp.get(i).getPrice() + "Cantidad: " + tmp.get(i).getAvailableAmount() + "\n";
+            txt = txt + i + ". " + tmp.get(i).getName() + ": " + "Precio: "+tmp.get(i).getPrice() + " Cantidad: " + tmp.get(i).getAvailableAmount() + "\n";
         }
         return txt;
     }
@@ -132,7 +132,7 @@ public class Controller {
     public String showCategory(){
         String txt = "";
         for (int i = 0; i < Category.values().length; i++){
-            txt = txt  + (i+1) + ". " + Category.values()[i];
+            txt = txt  + (i+1) + ". " + Category.values()[i] + "\n";
         }
         return txt;
     }

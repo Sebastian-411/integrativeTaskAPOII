@@ -56,7 +56,7 @@ public class Manager {
                 registerOrder();
                 break;
             case 4:
-                System.out.println("1. Busqueda por rango \n 2. Busqueda sin rango");
+                System.out.println("1. Busqueda por rango \n2. Busqueda sin rango");
                 switch (Integer.valueOf(sc.nextLine())) {
                     case 1:
                         searchProductWithRange();
@@ -70,7 +70,7 @@ public class Manager {
                 }
                 break;
             case 5:
-                System.out.println("1. Busqueda por rango \n 2. Busqueda sin rango");
+                System.out.println("1. Busqueda por rango \n2. Busqueda sin rango");
                 switch (Integer.valueOf(sc.nextLine())) {
                     case 1:
                         searchOrderWithRange();
@@ -96,7 +96,7 @@ public class Manager {
     
     public void increaseStock(){
         try {
-            System.out.println("1. Busqueda por rango \n 2. Busqueda sin rango");
+            System.out.println("1. Busqueda por rango \n2. Busqueda sin rango");
             switch (Integer.valueOf(sc.nextLine())) {
                 case 1:
                     searchProductWithRange();
@@ -155,7 +155,7 @@ public class Manager {
             int producto = 0;
             while(!x.equalsIgnoreCase("NO")) {
             System.out.println("Busca un producto");
-            System.out.println("1. Busqueda por rango \n 2. Busqueda sin rango");
+            System.out.println("1. Busqueda por rango \n2. Busqueda sin rango");
             switch (Integer.valueOf(sc.nextLine())){
                 case 1:
                     searchProductWithRange();
@@ -195,6 +195,7 @@ public class Manager {
                     "4. Buscar producto por cantidad disponible" + "\n" +
                     "5. Buscar producto por cantidad vendida");
             int x = Integer.parseInt(sc.nextLine());
+            if(x == 2) System.out.println(controller.showCategory());
             System.out.println("Ingresa el valor a buscar");
             String y = sc.nextLine();
             System.out.println(controller.searchProductWithoutRange(x, y));
